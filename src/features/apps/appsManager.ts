@@ -11,17 +11,19 @@ import { APPS, APP_NAMES } from "../../config/apps.config";
 import { Browser } from "../../components/apps/browser/Browser";
 import { IMAGE_FORMATS } from "../../config/apps/mediaViewer.config";
 import { LogicSim } from "../../components/apps/logic-sim/LogicSim";
+import { PhotoViewer } from "../../components/apps/file-explorer/photo-viewer/PhotoViewer";
 
 export class AppsManager {
   static APPS: App[] = [
     new App(APP_NAMES.TERMINAL, APPS.TERMINAL, Terminal as App["windowContent"]),
     new App(APP_NAMES.SETTINGS, APPS.SETTINGS, Settings),
-    new App(APP_NAMES.MEDIA_VIEWER, APPS.MEDIA_VIEWER, MediaViewer),
+    new App(APP_NAMES.MEDIA_VIEWER, APPS.MEDIA_VIEWER, PhotoViewer),
+    new App(APP_NAMES.VIDEO_VIEWER, APPS.VIDEO_VIEWER, MediaViewer),
     new App(APP_NAMES.CALCULATOR, APPS.CALCULATOR, Calculator, { size: new Vector2(400, 600) }),
     new App(APP_NAMES.TEXT_EDITOR, APPS.TEXT_EDITOR, TextEditor),
     new App(APP_NAMES.FILE_EXPLORER, APPS.FILE_EXPLORER, FileExplorer as App["windowContent"]),
     
-	new App("Videos", "video-viewer", MediaViewer),
+	// new App("Videos", "video-viewer", MediaViewer),
 	
     new App("Wordle", "wordle", WebView, {
       source: "https://prozilla.dev/wordle",
