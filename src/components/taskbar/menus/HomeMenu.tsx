@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "./HomeMenu.module.css";
 import appStyles from "./AppList.module.css";
 import taskbarStyles from "../Taskbar.module.css";
-import { faCircleInfo, faFileLines, faGear, faImage, faPowerOff, faTasks } from "@fortawesome/free-solid-svg-icons"; // Import the tasks icon
+import { faCircleInfo, faFileLines, faGear, faImage, faPowerOff, faTasks, faVideo } from "@fortawesome/free-solid-svg-icons"; // Import the tasks icon
 import { useWindowsManager } from "../../../hooks/windows/windowsManagerContext";
 import { AppsManager } from "../../../features/apps/appsManager";
 import { ReactSVG } from "react-svg";
@@ -91,6 +91,15 @@ export function HomeMenu({ active, setActive, search }: HomeMenuProps) {
           }}>
             <FontAwesomeIcon icon={faImage} />
             <p className={utilStyles.TextRegular}>Images</p>
+          </button>
+          <button 
+              tabIndex={tabIndex} 
+              onClick={() => {
+              setActive(false);
+              windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Videos" });
+            }}>
+        <FontAwesomeIcon icon={faVideo} />
+        <p className={utilStyles.TextRegular}>Videos</p>
           </button>
           <button tabIndex={tabIndex} onClick={() => {
             setActive(false);
