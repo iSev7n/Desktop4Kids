@@ -1,0 +1,73 @@
+{
+	"name": "Desktop4Kids",
+	"version": "0.1.0",
+	"private": false,
+	"author": {
+		"name": "Desktop4Kids",
+		"email": "tomatarmy@outlook.com",
+		"url": "https://Desktop4Kids.com"
+	},
+	"homepage": "https://Desktop4Kids.com",
+	"repository": "https://github.com/URL",
+	"type": "module",
+	"scripts": {
+		"start": "vite",
+		"build": "tsc && vite build",
+		"serve": "vite preview --port 8080",
+		"stage": "tsx scripts/stage",
+		"predeploy": "npm run build && npm run stage",
+		"deploy": "tsx scripts/deploy",
+		"fetch": "tsx scripts/fetchRepository"
+	},
+	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^6.4.0",
+		"@fortawesome/free-regular-svg-icons": "^6.4.0",
+		"@fortawesome/free-solid-svg-icons": "^6.4.0",
+		"@fortawesome/react-fontawesome": "^0.2.0",
+		"@vitejs/plugin-react-swc": "^3.7.0",
+		"anser": "^2.1.1",
+		"escape-carriage": "^1.3.1",
+		"markdown-to-jsx": "^7.2.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-draggable": "^4.4.5",
+		"react-error-boundary": "^4.0.13",
+		"react-ga4": "^2.1.0",
+		"react-router-dom": "^6.23.1",
+		"react-svg": "^16.1.18",
+		"react-syntax-highlighter": "^15.5.0",
+		"react-tabs": "^6.0.2",
+		"vite": "^5.2.12",
+		"vite-plugin-svgr": "^4.2.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.2.0",
+		"@types/eslint": "^8.56.10",
+		"@types/gh-pages": "^6.1.0",
+		"@types/node": "^20.12.8",
+		"@types/react": "^18.3.1",
+		"@types/react-dom": "^18.3.0",
+		"@types/react-syntax-highlighter": "^15.5.13",
+		"eslint": "^8.57.0",
+		"eslint-plugin-react": "^7.34.1",
+		"eslint-plugin-react-refresh": "^0.4.7",
+		"gh-pages": "^5.0.0",
+		"stylelint": "^16.6.1",
+		"tsx": "^4.15.4",
+		"typescript": "^5.4.5",
+		"typescript-eslint": "^7.8.0",
+		"vite-plugin-checker": "^0.6.4"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
+}

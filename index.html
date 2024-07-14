@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #0D1114;">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+		<title>Desktop4Kids | Operating System for Kids</title>
+		<meta name="description" content="Desktop4Kids | Creating a safe enviroment for kids."/>
+		<link rel="canonical" href="https://Desktop4Kids.com">
+
+		<!-- Favicon -->
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=6">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=6">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=6">
+		<link rel="icon" href="/favicon.ico?v=6" sizes="any">
+		<link rel="icon" href="/icon.svg?v=6" type="image/svg+xml">
+		<link rel="icon" href="/icon.png?v=6" type="image/png">
+		<link rel="manifest" href="/site.webmanifest?v=4">
+		<meta name="apple-mobile-web-app-title" content="Desktop4Kids">
+		<meta name="application-name" content="Desktop4Kids">
+		<meta name="msapplication-TileColor" content="#0d1114">
+		<meta name="theme-color" content="#4D9CFF">
+
+		<!-- Open Graph -->
+		<meta property="og:title" content="Desktop4Kids | Web-based Operating System"/>
+		<meta property="og:site_name" content="Desktop4Kids"/>
+		<meta property="og:description" content="Desktop4Kids is a web-based operating system inspired by Ubuntu Linux and Windows made with React.js."/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:image" content="#0"/>
+		<meta property="og:url" content="https://desktop4kids.com">
+		<meta property="og:locale" content="en_US">
+
+		<!-- Twitter
+		<meta name="twitter:title" content="Desktop4Kids | Web-based Operating System"/>
+		<meta name="twitter:description" content="Desktop4Kids is an open-source web-based operating system inspired by Ubuntu Linux and Windows made with React.js."/>
+		<meta name="twitter:card" content="summary_large_image"/>
+		<meta name="twitter:image" content="#0"/>
+		<meta name="twitter:url" content="https://Desktop4Kids.com"> -->
+
+		<!-- Fonts -->
+		<link rel="preload" href="/assets/fonts/outfit/Outfit-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+		<link rel="preload" href="/assets/fonts/roboto-mono/RobotoMono-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+
+		<!-- PWA -->
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="translucent-black">
+		<script>
+			// Change theme color to black if app is running as PWA
+			const isPWA = (window.navigator.standalone === true) || (window.matchMedia("(display-mode: standalone)").matches)
+			if (isPWA) {
+				const themeColor = document.querySelector("meta[name='theme-color']");
+				themeColor?.setAttribute("content", "#0D1114");
+			}
+		</script>
+
+		<!-- FAQ -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "FAQPage",
+			"mainEntity": [
+				{
+					"@type": "Question",
+					"name": "Is Desktop4Kids open-source?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "Yes, the source code for Desktop4Kids is hosted on <a href=\#0\">GitHub</a>."
+					}
+				},
+				{
+					"@type": "Question",
+					"name": "Is Desktop4Kids a real operating system?",
+					"acceptedAnswer": {
+						"@type": "Answer",
+						"text": "No, Desktop4Kids is a operating system that runs entirely in your browser. It does not have the same capabilities as an operating system like Ubuntu Linux and runs completely virtually."
+					}
+				}
+			]
+		}
+		</script>
+	</head>
+	<body>
+		<noscript>You need to enable JavaScript to run Desktop4Kids.</noscript>
+		<div id="root"></div>
+
+		<script type="module" src="/src/index.tsx"></script>
+	</body>
+</html>

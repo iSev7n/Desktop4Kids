@@ -1,0 +1,6 @@
+.DialogBox {
+    width: 100px; /* Set fixed width */
+    height: 200px; /* Set fixed height */
+    resize: none; /* Prevent resizing */
+    /* Other styling */
+  }
