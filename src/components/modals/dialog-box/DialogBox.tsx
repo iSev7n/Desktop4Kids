@@ -3,7 +3,8 @@ import { WindowedModal } from "../_utils/WindowedModal";
 import { ModalProps } from "../ModalView";
 import styles from "./DialogBox.module.css";
 
-export function DialogBox({ modal, params, children, ...props }: ModalProps) {
+export function DialogBox({ modal, params, children, onFinish, ...props }: ModalProps) {
+    
 	const onClick = (event: MouseEvent) => {
 		event.preventDefault();
 		const attribute = (event.target as HTMLElement).getAttribute("data-type");
@@ -18,7 +19,7 @@ export function DialogBox({ modal, params, children, ...props }: ModalProps) {
 		}
 	};
 
-	return <WindowedModal modal={modal} params={params} onClick={onClick} {...props}>
+	return <WindowedModal modal={modal} params={params} onFinish={onFinish} onClick={onClick} {...props}>
 		<div className={styles.DialogContent}>
 			{children}
 		</div>

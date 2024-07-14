@@ -88,7 +88,7 @@ export class VirtualFolder extends VirtualBase {
 	createFile(name: string, extension?: string, callback?: (newFile: VirtualFile | VirtualFileLink) => void): this {
 		if (!this.canBeEdited)
 			return this;
-
+      
 		let newFile = this.findFile(name, extension);
 		if (newFile == null) {
 			newFile = new VirtualFile(name, extension);

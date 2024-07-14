@@ -29,13 +29,14 @@ import { VirtualFolderLink } from "../../../features/virtual-drive/folder/virtua
 import { ImportButton } from "./ImportButton";
 import { useAlert } from "../../../hooks/modals/alert";
 import { VirtualRoot } from "../../../features/virtual-drive/root/virtualRoot";
+import { Modal } from "../../../features/modals/modal";
 
 interface FileExplorerProps extends WindowProps {
-    path?: string;
-    selectorMode?: number;
-    Footer: FC;
-    onSelectionChange: (params: OnSelectionChangeParams) => void;
-    onSelectionFinish: Function;
+	path?: string;
+	selectorMode?: number;
+	Footer: FC;
+	onSelectionChange: (params: OnSelectionChangeParams) => void;
+	onSelectionFinish: Function;
 }
 
 export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectionChange, onSelectionFinish }: FileExplorerProps) {
@@ -51,68 +52,72 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 	const [selectedFileType, setSelectedFileType] = useState<string>("");
 
 	const { openWindowedModal } = useWindowedModal();
-	const { onContextMenu: onContextMenuFile } = useContextMenu({ Actions: (props) =>
-		<Actions {...props}>
-			<ClickAction label={!isSelector ? "Open" : "Select"} onTrigger={(event, file) => {
-				if (isSelector) {
-					onSelectionChange?.({ files: [(file as VirtualFile).id], directory: currentDirectory });
-					onSelectionFinish?.();
-					return;
-				}
-				if (windowsManager != null)	(file as VirtualFile).open(windowsManager);
-			}}/>
-			<ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
-				(file as VirtualFile).delete();
-			}}/>
-			<ClickAction label="Properties" icon={faCircleInfo} onTrigger={(event, file) => {
-				openWindowedModal({
-					title: `${(file as VirtualFile).id} ${TITLE_SEPARATOR} Properties`,
-					iconUrl: (file as VirtualFile).getIconUrl(),
-					size: new Vector2(400, 500),
-					Modal: (props: object) => <FileProperties file={file as VirtualFile} {...props}/>
-				});
-			}}/>
-		</Actions>
+	const { onContextMenu: onContextMenuFile } = useContextMenu({
+		Actions: (props) =>
+			<Actions {...props}>
+				<ClickAction label={!isSelector ? "Open" : "Select"} onTrigger={(event, file) => {
+					if (isSelector) {
+						onSelectionChange?.({ files: [(file as VirtualFile).id], directory: currentDirectory });
+						onSelectionFinish?.();
+						return;
+					}
+					if (windowsManager != null) (file as VirtualFile).open(windowsManager);
+				}} />
+				<ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
+					(file as VirtualFile).delete();
+				}} />
+				<ClickAction label="Properties" icon={faCircleInfo} onTrigger={(event, file) => {
+					openWindowedModal({
+						title: `${(file as VirtualFile).id} ${TITLE_SEPARATOR} Properties`,
+						iconUrl: (file as VirtualFile).getIconUrl(),
+						size: new Vector2(400, 500),
+						Modal: (props: object) => <FileProperties file={file as VirtualFile} {...props} />
+					});
+				}} />
+			</Actions>
 	});
-	const { onContextMenu: onContextMenuFolder } = useContextMenu({ Actions: (props) =>
-		<Actions {...props}>
-			<ClickAction label="Open" onTrigger={(event, folder) => {
-				changeDirectory((folder as VirtualFolderLink).linkedPath ?? (folder as VirtualFolder).name);
-			}}/>
-			<ClickAction label={`Open in ${APP_NAMES.TERMINAL}`} icon={APP_ICONS.TERMINAL} onTrigger={(event, folder) => {
-				windowsManager?.open(APPS.TERMINAL, { startPath: (folder as VirtualFolder).path });
-			}}/>
-			<Divider/>
-			<ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
-				(folder as VirtualFolder).delete();
-			}}/>
-		</Actions>
+	const { onContextMenu: onContextMenuFolder } = useContextMenu({
+		Actions: (props) =>
+			<Actions {...props}>
+				<ClickAction label="Open" onTrigger={(event, folder) => {
+					changeDirectory((folder as VirtualFolderLink).linkedPath ?? (folder as VirtualFolder).name);
+				}} />
+				<ClickAction label={`Open in ${APP_NAMES.TERMINAL}`} icon={APP_ICONS.TERMINAL} onTrigger={(event, folder) => {
+					windowsManager?.open(APPS.TERMINAL, { startPath: (folder as VirtualFolder).path });
+				}} />
+				<Divider />
+				<ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
+					(folder as VirtualFolder).delete();
+				}} />
+			</Actions>
 	});
-	
-	const [newModalOpen, setNewModalOpen] = useState(false);
-    const [newItemType, setNewItemType] = useState<"File" | "Folder" | null>(null);
-    const [newItemName, setNewItemName] = useState("");
 
-    const onNew = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        setNewModalOpen(true);
-    };
+	const [newModalOpen, setNewModalOpen] = useState(false);
+	const [newItemType, setNewItemType] = useState<"File" | "Folder" | null>(null);
+	const [newItemName, setNewItemName] = useState("");
+
+	const onNew = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+		setNewModalOpen(true);
+	};
 
 	const handleClose = () => {
 		setNewModalOpen(false);
-	  };
+	};
 
-    const createNewFile = () => {
-        if (newItemType === "File" && newItemName) {
-            currentDirectory.createFile(newItemName);
-        } else if (newItemType === "Folder" && newItemName) {
-            currentDirectory.createFolder(newItemName);
-        }
-        // Close the modal after creating file or folder
-        setNewModalOpen(false);
-        setNewItemName("");
-        setNewItemType(null);
-    };
+	const createNewFile = () => {
+		if (newItemType === "File" && newItemName) {
+			const extension = newItemName.split(".")[1] || "txt";
+			const name = newItemName.split(".")[0];
+			currentDirectory.createFile(name, extension);
+		} else if (newItemType === "Folder" && newItemName) {
+			currentDirectory.createFolder(newItemName);
+		}
+		// Close the modal after creating file or folder
+		setNewModalOpen(false);
+		setNewItemName("");
+		setNewItemType(null);
+	};
 
 
 	const changeDirectory = useCallback((path: string, absolute = false) => {
@@ -144,22 +149,22 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 	}, [history, stateIndex, virtualRoot]);
 
 	useEffect(() => {
-		type Error = { message: string };
-		const onError = (error: unknown) => {
-			alert({
-				title: (error as Error).message,
-				text: "You have exceeded the virtual drive capacity. Files and folders will not be saved until more storage is freed.",
-				iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
-				size: new Vector2(300, 200),
-				single: true,
-			});
-		};
+        type Error = { message: string };
+        const onError = (error: unknown) => {
+        	alert({
+        		title: (error as Error).message,
+        		text: "You have exceeded the virtual drive capacity. Files and folders will not be saved until more storage is freed.",
+        		iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
+        		size: new Vector2(300, 200),
+        		single: true,
+        	});
+        };
 
-		virtualRoot?.on(VirtualRoot.EVENT_NAMES.ERROR, onError);
+        virtualRoot?.on(VirtualRoot.EVENT_NAMES.ERROR, onError);
 
-		return () => {
-			virtualRoot?.off(VirtualRoot.EVENT_NAMES.ERROR, onError);
-		};
+        return () => {
+        	virtualRoot?.off(VirtualRoot.EVENT_NAMES.ERROR, onError);
+        };
 	}, []);
 
 	const onPathChange = (event: Event) => {
@@ -206,7 +211,7 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 					onClick={() => { undo(); }}
 					disabled={!undoAvailable}
 				>
-					<FontAwesomeIcon icon={faCaretLeft}/>
+					<FontAwesomeIcon icon={faCaretLeft} />
 				</button>
 				<button
 					title="Forward"
@@ -215,7 +220,7 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 					onClick={() => { redo(); }}
 					disabled={!redoAvailable}
 				>
-					<FontAwesomeIcon icon={faCaretRight}/>
+					<FontAwesomeIcon icon={faCaretRight} />
 				</button>
 				<button
 					title="Up"
@@ -224,16 +229,16 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 					onClick={() => { changeDirectory(".."); }}
 					disabled={currentDirectory.isRoot != null && currentDirectory.isRoot}
 				>
-					<FontAwesomeIcon icon={faArrowUp}/>
+					<FontAwesomeIcon icon={faArrowUp} />
 				</button>
 				<button
-  					title="New"
-  					tabIndex={0}
-  					className={styles.IconButton}
-  					onClick={onNew}
-  					disabled={!currentDirectory.canBeEdited}
-					>
-  				<FontAwesomeIcon icon={faPlus}/>
+					title="New"
+					tabIndex={0}
+					className={styles.IconButton}
+					onClick={onNew}
+					disabled={!currentDirectory.canBeEdited}
+				>
+					<FontAwesomeIcon icon={faPlus} />
 				</button>
 				<input
 					value={path}
@@ -245,24 +250,24 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 					onKeyDown={onKeyDown as unknown as KeyboardEventHandler}
 					placeholder="Enter a path..."
 				/>
-				<ImportButton directory={currentDirectory}/>
+				<ImportButton directory={currentDirectory} />
 				<button title="Search" tabIndex={0} className={styles.IconButton}>
-					<FontAwesomeIcon icon={faSearch}/>
+					<FontAwesomeIcon icon={faSearch} />
 				</button>
 				<button title="Settings" tabIndex={0} className={styles.IconButton}>
-					<FontAwesomeIcon icon={faCog}/>
+					<FontAwesomeIcon icon={faCog} />
 				</button>
 			</div>
 			<div className={styles.Body}>
 				<div className={styles.Sidebar}>
-					<QuickAccessButton name={"Home"} onClick={() => { changeDirectory("~"); }} icon={faHouse}/>
-					<QuickAccessButton name={"Desktop"} onClick={() => { changeDirectory("~/Desktop"); }} icon={faDesktop}/>
-					<QuickAccessButton name={"Images"} onClick={() => { changeDirectory("~/Pictures"); }} icon={faImage}/>
-					<QuickAccessButton name={"Videos"} onClick={() => { changeDirectory("~/Videos"); }} icon={faFileVideo}/>
-					<QuickAccessButton name={"Documents"} onClick={() => { changeDirectory("~/Documents"); }} icon={faFileLines}/>
+					<QuickAccessButton name={"Home"} onClick={() => { changeDirectory("~"); }} icon={faHouse} />
+					<QuickAccessButton name={"Desktop"} onClick={() => { changeDirectory("~/Desktop"); }} icon={faDesktop} />
+					<QuickAccessButton name={"Images"} onClick={() => { changeDirectory("~/Pictures"); }} icon={faImage} />
+					<QuickAccessButton name={"Videos"} onClick={() => { changeDirectory("~/Videos"); }} icon={faFileVideo} />
+					<QuickAccessButton name={"Documents"} onClick={() => { changeDirectory("~/Documents"); }} icon={faFileLines} />
 				</div>
 				<DirectoryList
-					directory={currentDirectory} 
+					directory={currentDirectory}
 					id="main"
 					className={styles.Main}
 					showHidden={showHidden}
@@ -294,38 +299,46 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
 					</p>
 				</span>
 				: <div className={styles.Footer}>
-				<Footer/>
-			</div>
-		}
-		{/* New item modal */}
-		{newModalOpen && (
-			<DialogBox
-				title="New"
-				iconUrl={AppsManager.getAppIconUrl(APPS.FILE_EXPLORER)}
-				size={new Vector2(300, 200)}
-				onClose={handleClose}
-			>
-				<p>Select the type of item to create:</p>
-				<div>
-					<button onClick={() => setNewItemType("File")}>File</button>
-					<button onClick={() => setNewItemType("Folder")}>Folder</button>
+					<Footer />
 				</div>
-				{newItemType && (
-					<>
-						<p>Enter the name:</p>
-						<input
-							type="text"
-							value={newItemName}
-							onChange={(e) => setNewItemName(e.target.value)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") createNewFile();
-							}}
-						/>
-						<button onClick={createNewFile}>Create</button>
-					</>
-				)}
-			</DialogBox>
-		)}
-	</div>
-);
+			}
+			{/* New item modal */}
+			{newModalOpen && (
+                
+				<DialogBox
+					title="New"
+					iconUrl={AppsManager.getAppIconUrl(APPS.FILE_EXPLORER)}
+					size={new Vector2(300, 200)}
+					onFinish={handleClose}
+				>
+					<div >
+						<p>Select the type of item to create:</p>
+						<div className={styles.flex}>
+							<button onClick={() => setNewItemType("File")}>File</button>
+							<button onClick={() => setNewItemType("Folder")}>Folder</button>
+						</div>
+						{newItemType && (
+							<>
+								<p>Enter the name:</p>
+								<div className={styles.flex}>
+									<input
+										type="text"
+										value={newItemName}
+										className={styles.Input}
+										onChange={(e) => setNewItemName(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter") createNewFile();
+										}}
+									/>
+									<button  onClick={createNewFile}>Create</button>
+								</div>
+							</>
+						)}
+					</div>
+
+
+				</DialogBox>
+			)}
+		</div>
+	);
 }

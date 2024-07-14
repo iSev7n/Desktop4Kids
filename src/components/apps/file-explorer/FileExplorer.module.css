@@ -9,7 +9,12 @@
 	width: 100%;
 	height: 100%;
 }
-
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:1rem;
+}
 .Header {
 	display: flex;
 	gap: 1rem;
@@ -66,6 +71,24 @@
 	transition: fill 100ms ease-in-out;
 }
 
+.Input{
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: white;
+    color:gray;
+    border-radius: var(--border-radius-1);
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+
+}
+.Input::placeholder{
+    color: gary;
+
+}
 .PathInput {
 	flex: 1;
 	padding: 0.25rem 0.5rem;

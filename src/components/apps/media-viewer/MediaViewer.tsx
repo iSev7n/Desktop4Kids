@@ -20,7 +20,7 @@ export function MediaViewer({ file, close, setTitle }: MediaViewerProps) {
     // Handle when no file is provided
     if (file == null) {
         setTimeout(() => {
-            windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Pictures" });
+            windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Videos" });
             close?.();
         }, 10);
         return null; // You can return null or any loading indicator here
