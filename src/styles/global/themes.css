@@ -65,3 +65,63 @@
 	--taskbar-color: var(--purple-2);
 	--taskbar-menu-color: var(--purple-1);
 }
+
+.Green-theme {
+    --foreground-color-0: var(--black-3);
+    --foreground-color-1: var(--black-2);
+    --foreground-color-2: var(--black-1);
+
+    --background-color-0: #e0f7e0; /* Light pastel green */
+    --background-color-1: #e0f7e0;
+    --background-color-2: #c2ebc2; /* Slightly darker pastel green */
+    --background-color-3: #c2ebc2;
+    --background-color-4: #a3dea3; /* Darkest pastel green */
+
+    --taskbar-color: #e0f7e0; /* Taskbar color matches background */
+    --taskbar-menu-color: #c2ebc2; /* Menu color slightly darker */
+}
+
+.DarkGreen-theme {
+	--foreground-color-0: #FFFFFF;
+    --foreground-color-1: #FFFFFF;
+    --foreground-color-2: #FFFFFF;
+
+    --background-color-0: #003300; /* Dark green */
+    --background-color-1: #004d00; /* Slightly lighter dark green */
+    --background-color-2: #006600; /* Medium dark green */
+    --background-color-3: #008000; /* Lighter dark green */
+    --background-color-4: #009900; /* Lightest dark green */
+
+    --taskbar-color: #004d00; /* Taskbar color matches darker shade */
+    --taskbar-menu-color: #003300; /* Menu color slightly darker */
+}
+
+.DeepBlue-theme {
+    --foreground-color-0: #FFFFFF; /* White for contrast */
+    --foreground-color-1: #FFFFFF;
+    --foreground-color-2: #FFFFFF;
+
+    --background-color-0: #001f3f; /* Dark blue */
+    --background-color-1: #002966; /* Slightly lighter dark blue */
+    --background-color-2: #003f99; /* Medium dark blue */
+    --background-color-3: #0055cc; /* Lighter dark blue */
+    --background-color-4: #0066ff; /* Lightest dark blue */
+
+    --taskbar-color: #002966; /* Taskbar color matches darker shade */
+    --taskbar-menu-color: #001f3f; /* Menu color slightly darker */
+}
+
+.Pink-theme {
+	--foreground-color-0: var(--black-3);
+    --foreground-color-1: var(--black-2);
+    --foreground-color-2: var(--black-1);
+
+    --background-color-0: #f9dddd; /* Light pastel red */
+    --background-color-1: #f9dddd;
+    --background-color-2: #f1bfbf; /* Slightly darker pastel red */
+    --background-color-3: #f1bfbf;
+    --background-color-4: #e99999; /* Darkest pastel red */
+
+    --taskbar-color: #e99999; /* Taskbar color matches darkest shade */
+    --taskbar-menu-color: #f1bfbf; /* Menu color slightly darker */
+}
