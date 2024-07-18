@@ -16,123 +16,121 @@ import { APPS } from "../../../config/apps.config";
 import { NAME } from "../../../config/branding.config";
 
 interface HomeMenuProps {
-  active: boolean;
-  setActive: Function;
-  search: Function;
+active: boolean;
+setActive: Function;
+search: Function;
 }
 
 export function HomeMenu({ active, setActive, search }: HomeMenuProps) {
-  const windowsManager = useWindowsManager();
-  const virtualRoot = useVirtualRoot();
-  const [tabIndex, setTabIndex] = useState(active ? 0 : -1);
+    const windowsManager = useWindowsManager();
+    const virtualRoot = useVirtualRoot();
+    const [tabIndex, setTabIndex] = useState(active ? 0 : -1);
 
-  useEffect(() => {
-    setTabIndex(active ? 0 : -1);
-  }, [active]);
+    useEffect(() => {
+        setTabIndex(active ? 0 : -1);
+    }, [active]);
 
-  const classNames = [styles.HomeMenuContainer, taskbarStyles.MenuContainer];
-  if (active) classNames.push(taskbarStyles.Active);
+    const classNames = [styles.HomeMenuContainer, taskbarStyles.MenuContainer];
+    if (active) classNames.push(taskbarStyles.Active);
 
-  let onlyAltKey = false;
-  const onKeyDown = (event: KeyboardEvent) => {
-    if (event.key === "Alt") {
-      event.preventDefault();
-      onlyAltKey = true;
-    } else {
-      onlyAltKey = false;
+    let onlyAltKey = false;
+    const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key === "Alt") {
+            event.preventDefault();
+            onlyAltKey = true;
+        } else {
+            onlyAltKey = false;
 
-      if (active && event.key.length === 1) {
-        search(event.key);
-      }
-    }
-  };
+            if (active && event.key.length === 1) {
+                search(event.key);
+            }
+        }
+    };
 
-  const onKeyUp = (event: KeyboardEvent) => {
-    if (event.key === "Alt" && onlyAltKey) {
-      event.preventDefault();
-      setActive(!active);
-      onlyAltKey = false;
-    } else {
-      onlyAltKey = false;
-    }
-  };
+    const onKeyUp = (event: KeyboardEvent) => {
+        if (event.key === "Alt" && onlyAltKey) {
+            event.preventDefault();
+            setActive(!active);
+            onlyAltKey = false;
+        } else {
+            onlyAltKey = false;
+        }
+    };
 
-  useKeyboardListener({ onKeyDown, onKeyUp });
+    useKeyboardListener({ onKeyDown, onKeyUp });
 
-  return (
-    <div className={classNames.join(" ")}>
-      <div className={`${styles.HomeMenu} ${taskbarStyles.Menu}`}>
-        <div className={styles.Buttons}>
-          <button tabIndex={tabIndex} onClick={() => { closeViewport(true); }}>
-            <FontAwesomeIcon icon={faPowerOff} />
-            <p className={utilStyles.TextRegular}>Shut down</p>
-          </button>
-          <button tabIndex={tabIndex} onClick={() => {
-            setActive(false);
-            windowsManager?.open("settings");
-          }}>
-            <FontAwesomeIcon icon={faGear} />
-            <p className={utilStyles.TextRegular}>Settings</p>
-          </button>
-          <button tabIndex={tabIndex} onClick={() => {
-            setActive(false);
-            windowsManager?.open("text-editor", {
-              mode: "view",
-              file: virtualRoot?.navigate("~/Documents/Info.md"),
-              size: new Vector2(575, 675),
-            });
-          }}>
-            <FontAwesomeIcon icon={faCircleInfo} />
-            <p className={utilStyles.TextRegular}>Info</p>
-          </button>
-          <button tabIndex={tabIndex} onClick={() => {
-            setActive(false);
-            windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Pictures" });
-          }}>
-            <FontAwesomeIcon icon={faImage} />
-            <p className={utilStyles.TextRegular}>Images</p>
-          </button>
-          <button 
-              tabIndex={tabIndex} 
-              onClick={() => {
-              setActive(false);
-              windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Videos" });
-            }}>
-        <FontAwesomeIcon icon={faVideo} />
-        <p className={utilStyles.TextRegular}>Videos</p>
-          </button>
-          <button tabIndex={tabIndex} onClick={() => {
-            setActive(false);
-            windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Documents" });
-          }}>
-            <FontAwesomeIcon icon={faFileLines} />
-            <p className={utilStyles.TextRegular}>Documents</p>
-          </button>
+    return (
+        <div className={classNames.join(" ")}>
+            <div className={`${styles.HomeMenu} ${taskbarStyles.Menu}`}>
+                <div className={styles.Buttons}>
+                    <button tabIndex={tabIndex} onClick={() => { closeViewport(true); }}>
+                        <FontAwesomeIcon icon={faPowerOff} />
+                        <p className={utilStyles.TextRegular}>Shut down</p>
+                    </button>
+                    <button tabIndex={tabIndex} onClick={() => {
+                        setActive(false);
+                        windowsManager?.open("settings");
+                    }}>
+                        <FontAwesomeIcon icon={faGear} />
+                        <p className={utilStyles.TextRegular}>Settings</p>
+                    </button>
+                    <button tabIndex={tabIndex} onClick={() => {
+                        setActive(false);
+                        windowsManager?.open("text-editor", {
+                            mode: "view",
+                            file: virtualRoot?.navigate("~/Documents/Info.md"),
+                            size: new Vector2(575, 675),
+                        });
+                    }}>
+                        <FontAwesomeIcon icon={faCircleInfo} />
+                        <p className={utilStyles.TextRegular}>Info</p>
+                    </button>
+                    <button tabIndex={tabIndex} onClick={() => {
+                        setActive(false);
+                        windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Videos" });
+                    }}>
+                        <FontAwesomeIcon icon={faVideo} />
+                        <p className={utilStyles.TextRegular}>Videos</p>
+                    </button>
+                    <button tabIndex={tabIndex} onClick={() => {
+                        setActive(false);
+                        windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Pictures" });
+                    }}>
+                        <FontAwesomeIcon icon={faImage} />
+                        <p className={utilStyles.TextRegular}>Images</p>
+                    </button>
+                    <button tabIndex={tabIndex} onClick={() => {
+                        setActive(false);
+                        windowsManager?.open(APPS.FILE_EXPLORER, { path: "~/Documents" });
+                    }}>
+                        <FontAwesomeIcon icon={faFileLines} />
+                        <p className={utilStyles.TextRegular}>Documents</p>
+                    </button>
+                </div>
+                <div className={styles.Apps}>
+                    <span className={styles.Logo}>
+                        <ReactSVG src={"/assets/logo.svg"} />
+                        <h1 className={utilStyles.TextBold}>{NAME}</h1>
+                    </span>
+                    <div className={appStyles.AppList}>
+                        {AppsManager.APPS.sort((a, b) => a.name.localeCompare(b.name)).map(({ name, id }) =>
+                            <button
+                                key={id}
+                                className={appStyles.AppButton}
+                                tabIndex={tabIndex}
+                                onClick={() => {
+                                    setActive(false);
+                                    windowsManager?.open(id);
+                                }}
+                                title={name}
+                            >
+                                <ReactSVG src={AppsManager.getAppIconUrl(id)} />
+                                <h2 className={utilStyles.TextRegular}>{name}</h2>
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className={styles.Apps}>
-          <span className={styles.Logo}>
-            <ReactSVG src={"/assets/logo.svg"} />
-            <h1 className={utilStyles.TextBold}>{NAME}</h1>
-          </span>
-          <div className={appStyles.AppList}>
-            {AppsManager.APPS.sort((a, b) => a.name.localeCompare(b.name)).map(({ name, id }) =>
-              <button
-                key={id}
-                className={appStyles.AppButton}
-                tabIndex={tabIndex}
-                onClick={() => {
-                  setActive(false);
-                  windowsManager?.open(id);
-                }}
-                title={name}
-              >
-                <ReactSVG src={AppsManager.getAppIconUrl(id)} />
-                <h2 className={utilStyles.TextRegular}>{name}</h2>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }

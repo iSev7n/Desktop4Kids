@@ -25,7 +25,7 @@ export const APP_NAMES: Record<AppKey, string> = {
 	CALCULATOR: "Calculator",
 	BROWSER: "Browser",
 	LOGIC_SIM: "Logic Sim (WIP)",
-	VIDEO_VIEWER: "Videos", // Add the name for your video viewer app
+	VIDEO_VIEWER: "Video Viewer", // Add the name for your video viewer app
   };
   
   export const APP_DESCRIPTIONS: Record<AppKey, string | null> = {
