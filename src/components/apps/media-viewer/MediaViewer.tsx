@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import { useEffect } from "react";
 import { useWindowsManager } from "../../../hooks/windows/windowsManagerContext";
 import styles from "./MediaViewer.module.css";
@@ -10,7 +11,7 @@ interface MediaViewerProps extends WindowProps {
     file?: VirtualFile;
 }
 
-export function MediaViewer({ file, close, setTitle }: MediaViewerProps) {
+export function MediaViewer({ file,path, close, setTitle }: MediaViewerProps) {
     const windowsManager = useWindowsManager();
 
     useEffect(() => {

@@ -56,6 +56,9 @@ export function WindowedModal({ modal, params, children, onFinish, ...props }: M
             style={{
                 width: modal?.size.x ?? 0,
                 height: modal?.size.y ?? 0,
+                minWidth:"30rem",
+                minHeight:"17rem",
+                boxShadow:"rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
             }}
         >
             <div className={`${styles.Header} Window-handle`}>

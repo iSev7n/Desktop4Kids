@@ -8,5 +8,5 @@ export const THEMES: Record<number, string | null> = {
     7: "Green",
 	8: "Mango",
 	9: "Cherry",
-    10: "DarkGreen",
+    10: "DarkGreen"
 };

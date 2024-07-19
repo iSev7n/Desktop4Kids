@@ -28,22 +28,6 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
     }
   }, [hideUtilMenus, showMenu]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") {
-        handlePreviousMonth();
-      } else if (event.key === "ArrowRight") {
-        handleNextMonth();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
   const updateShowMenu = (show: boolean) => {
     if (show) showUtilMenu();
     setShowMenu(show);
@@ -82,12 +66,10 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
     const daysInCurrentMonth = daysInMonth(currentMonth, currentYear);
     const firstDay = firstDayOfMonth(currentMonth, currentYear);
 
-    // Push empty cells for the days before the first day of the month
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className={styles.CalendarCell}></div>);
     }
 
-    // Push cells for each day of the month
     for (let i = 1; i <= daysInCurrentMonth; i++) {
       const isToday =
         i === date.getDate() &&
@@ -96,9 +78,7 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
       days.push(
         <div
           key={i}
-          className={`${styles.CalendarCell} ${
-            isToday ? styles.CurrentDay : ""
-          }`}
+          className={`${styles.CalendarCell} ${isToday ? styles.CurrentDay : ""}`}
         >
           {i}
         </div>
@@ -107,6 +87,8 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
 
     return days;
   }, [currentMonth, currentYear, date, daysInMonth, firstDayOfMonth]);
+
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <OutsideClickListener onOutsideClick={() => updateShowMenu(false)}>
@@ -146,14 +128,22 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
           })}
         </p>
         <div className={styles.Calendar}>
-          <div className={styles.CalendarNavigation}>
-            <button onClick={handlePreviousMonth} className={styles.NavButton}>&larr;</button><button onClick={handleNextMonth} className={styles.NavButton}>&rarr;</button>
-            <span className={styles.MonthYear}>
+          <div className={styles.CalendarHeader}>
+            <button className={styles.prevButton} onClick={handlePreviousMonth}>&lt;</button>
+            <span className={styles.monthYear}>
               {new Date(currentYear, currentMonth).toLocaleString("en-GB", {
                 month: "long",
                 year: "numeric",
               })}
             </span>
+            <button className={styles.nextButton} onClick={handleNextMonth}>&gt;</button>
+          </div>
+          <div className={styles.Weekdays}>
+            {weekdays.map(day => (
+              <div key={day} className={styles.Weekday}>
+                {day}
+              </div>
+            ))}
           </div>
           <div className={styles.CalendarGrid}>{renderCalendar()}</div>
         </div>

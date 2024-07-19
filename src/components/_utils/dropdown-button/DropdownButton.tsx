@@ -6,7 +6,7 @@ import { formatShortcut } from "../../../features/_utils/string.utils";
 export function DropdownButton({ label, options, shortcuts }: { label: string; options: { [s: string]: Function; }; shortcuts: { [s: string]: string[]; }; }) {
 	const [open, setOpen] = useState(false);
 	const [tabIndex, setTabIndex] = useState(-1);
-
+    console.log("RightCLick")
 	useEffect(() => {
 		setTabIndex(open ? 0 : -1);
 	}, [open]);

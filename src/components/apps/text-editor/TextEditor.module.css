@@ -4,6 +4,7 @@
 	width: 100%;
 	height: 100%;
 	text-align: start;
+    position: relative;
 }
 
 .TextEditor p,
@@ -26,7 +27,16 @@
 	resize: none;
 	overflow: auto;
 }
+.Find{
+    position: absolute;
+    width: fit-content;
+    height:fit-content;
+    top: 5rem;
+    transform: translateX(-50%);
+    background-color: #fff;
 
+    z-index: 20;
+}
 .View {
 	z-index: 2;
 }
@@ -70,7 +80,50 @@
 .Alert > svg * {
 	fill: var(--color-0);
 }
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:1rem;
+}
+.flex_cols{
+    flex-direction: column;
+    
+}
+.items_start{
+    align-items: start;
 
+}
+.justify_start{
+    align-items: start;
+
+}
+.space_y_3{
+    margin-bottom: 1rem;
+
+}
+.Input{
+    display: flex;
+    
+    align-items: center;
+    padding: 0.5rem;
+    background-color: white;
+    color:gray;
+    border-radius: var(--border-radius-1);
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+
+}
+.button{
+  margin-top:2rem;
+
+}
+.Input::placeholder{
+    color: gary;
+
+}
 .ImportantAlert {
 	--color-0: var(--purple-0);
 	--color-1: var(--purple-1);

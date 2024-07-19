@@ -17,6 +17,7 @@ export class App {
 	 * @param windowOptions - Default window options
 	 */
 	constructor(name: App["name"], id: App["id"], windowContent: App["windowContent"], windowOptions?: App["windowOptions"]) {
+       
 		Object.assign(this, { name, id, windowContent, windowOptions });
 
 		if (this.windowContent == null)
