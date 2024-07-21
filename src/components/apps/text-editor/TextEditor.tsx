@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { ReactNode, Ref, useEffect, useRef, useState } from "react";
+import { MouseEventHandler, ReactNode, Ref, useEffect, useRef, useState } from "react";
 import styles from "./TextEditor.module.css";
 import { HeaderMenu } from "../_utils/header-menu/HeaderMenu";
 import Markdown from "markdown-to-jsx";
@@ -26,6 +26,9 @@ import { useVirtualRoot } from "../../../hooks/virtual-drive/virtualRootContext"
 import { APP_NAMES } from "../../../config/apps.config";
 import { Divider } from "../../actions/actions/Divider";
 import FindReplaceDialog from "./FindAndReplace";
+import { useContextMenu } from "../../../hooks/modals/contextMenu";
+import { Actions } from "../../actions/Actions";
+import { faFile, faFolder, faFolderTree } from "@fortawesome/free-solid-svg-icons";
 
 const OVERRIDES = {
     a: MarkdownLink,
@@ -72,6 +75,22 @@ export function TextEditor({ file, path, setTitle, setIconUrl, close, mode, app,
         setPositions([]);
         setCurrentOccurrence(0);
     }, [content]);
+
+    const { onContextMenu, ShortcutsListener } = useContextMenu({
+        Actions: (props) =>
+            <Actions {...props}>
+
+
+                <ClickAction label="Copy" onTrigger={handleCopy} />
+                <ClickAction label="Cut" onTrigger={handleCut} />
+                <ClickAction label="Paste" onTrigger={handlePaste} />
+                <ClickAction label="Select All" onTrigger={handleSelectAll} />
+
+
+
+
+            </Actions>
+    });
 
     useEffect(() => {
         void (async () => {
@@ -199,29 +218,28 @@ export function TextEditor({ file, path, setTitle, setIconUrl, close, mode, app,
         }
     };
 
-    const handleCut = () => {
+    const handleCut = async () => {
         if (ref.current instanceof HTMLTextAreaElement) {
             ref.current.focus();
+            const selectedText = window.getSelection()?.toString() ?? "";
+            await navigator.clipboard.writeText(selectedText);
             document.execCommand("cut");
         }
     };
 
-    const handleCopy = () => {
+    const handleCopy = async () => {
         if (ref.current instanceof HTMLTextAreaElement) {
             ref.current.focus();
-            void navigator.clipboard.writeText(
-                window.getSelection()?.toString() ?? content
-            );
+            const selectedText = window.getSelection()?.toString() ?? "";
+            await navigator.clipboard.writeText(selectedText);
         }
     };
 
-    const handlePaste = () => {
+    const handlePaste = async () => {
         if (ref.current instanceof HTMLTextAreaElement) {
             ref.current.focus();
-            // paste the copy text
-            void navigator.clipboard.readText().then((text) => {
-                document.execCommand("insertText", false, text);
-            });
+            const text = await navigator.clipboard.readText();
+            document.execCommand("insertText", false, text);
         }
     };
 
@@ -301,10 +319,16 @@ export function TextEditor({ file, path, setTitle, setIconUrl, close, mode, app,
 
 
     const handleCloseDialog = () => {
+        // check if data is not save yet 
+
+
         setDialogOpen(false);
+
+
     };
 
-    return (
+    return (<>
+        <ShortcutsListener />
         <div className={styles.TextEditor} style={{ fontSize: zoom }}>
             <HeaderMenu>
                 <DropdownAction label="File" showOnHover={false}>
@@ -390,6 +414,7 @@ export function TextEditor({ file, path, setTitle, setIconUrl, close, mode, app,
                         }
                     </div>
                 : <textarea
+                    onContextMenu={onContextMenu as unknown as MouseEventHandler}
                     ref={ref as Ref<HTMLTextAreaElement>}
                     className={styles.View}
                     value={content}
@@ -400,5 +425,6 @@ export function TextEditor({ file, path, setTitle, setIconUrl, close, mode, app,
                 />
             }
         </div>
+    </>
     );
 }

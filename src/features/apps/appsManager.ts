@@ -39,7 +39,7 @@ export class AppsManager {
       size: new Vector2(600, 600)
     }),
     new App("Paint", "paint", WebView, {
-      source: "http://desktop4kids.com/Paint/",
+      source: "https://desktop4kids.com/pixil/",
       size: new Vector2(1000, 800)
     }),
     new App(APP_NAMES.BROWSER, APPS.BROWSER, Browser, {

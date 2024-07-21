@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/indent */
-import { MouseEventHandler, ReactElement, useEffect, useRef, useState } from "react";
+import { useEffect, useState, useRef, MouseEventHandler } from "react";
 import { VirtualFile } from "../../../../features/virtual-drive/file";
 import { VirtualFolder } from "../../../../features/virtual-drive/folder/virtualFolder";
-import { Interactable } from "../../../_utils/interactable/Interactable";
+import { Vector2 } from "../../../../features/math/vector2";
 import styles from "./DirectoryList.module.css";
 import { ImagePreview } from "./ImagePreview";
-import { Vector2 } from "../../../../features/math/vector2";
+import { Interactable } from "../../../_utils/interactable/Interactable";
 
 export interface OnSelectionChangeParams {
     files?: string[];
     folders?: string[];
     directory?: VirtualFolder;
-};
+}
 
 export type FileEventHandler = (event: Event, file: VirtualFile) => void;
 export type FolderEventHandler = (event: Event, folder: VirtualFolder) => void;
@@ -31,18 +30,30 @@ interface DirectoryListProps {
     [key: string]: unknown;
 }
 
-export function DirectoryList({ directory, showHidden = false, folderClassName, fileClassName, className,
-    onContextMenuFile, onContextMenuFolder, onOpenFile, onOpenFolder, allowMultiSelect = true, onSelectionChange, ...props }: DirectoryListProps): ReactElement | null {
+export function DirectoryList({
+    directory,
+    showHidden = false,
+    folderClassName,
+    fileClassName,
+    className,
+    onContextMenuFile,
+    onContextMenuFolder,
+    onOpenFile,
+    onOpenFolder,
+    allowMultiSelect = true,
+    onSelectionChange,
+    ...props
+}: DirectoryListProps): React.ReactElement | null {
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+    const [stateUpdate, setStateUpdate] = useState(false);
 
     const ref = useRef(null);
     const [rectSelectStart, setRectSelectStart] = useState<Vector2 | null>(null);
     const [rectSelectEnd, setRectSelectEnd] = useState<Vector2 | null>(null);
 
-    const [newFileName, setNewFileName] = useState("");
-    const [newFolderName, setNewFolderName] = useState("");
-
+    const [newFolderNames, setNewFolderNames] = useState<{ id: string, name: string }[]>([]);
+    const [newFileNames, setNewFileNames] = useState<{ id: string, name: string }[]>([]);
 
     useEffect(() => {
         onSelectionChange?.({ files: selectedFiles, folders: selectedFolders, directory });
@@ -51,15 +62,6 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
     useEffect(() => {
         clearSelection();
     }, [directory]);
-
-
-
-    useEffect(()=>{
-        if (selectedFiles.length > 0 || selectedFolders.length > 0) {
-            setNewFileName("New File");
-            setNewFolderName("New Folder");
-        };
-    },[directory]);
 
     useEffect(() => {
         const onMoveRectSelect = (event: MouseEvent) => {
@@ -90,13 +92,20 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
         };
     });
 
-    if (!directory)
-        return null;
+    useEffect(() => {
+        if (stateUpdate) {
+            directory.confirmChanges();
+            setStateUpdate(false);
+        }
+    }, [stateUpdate, directory]);
+
+    if (!directory) return null;
 
     const clearSelection = () => {
         setSelectedFolders([]);
         setSelectedFiles([]);
     };
+
     const selectFolder = (folder: VirtualFolder, exclusive = false) => {
         if (!allowMultiSelect)
             exclusive = true;
@@ -104,6 +113,7 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
         if (exclusive)
             setSelectedFiles([]);
     };
+
     const selectFile = (file: VirtualFile, exclusive = false) => {
         if (!allowMultiSelect)
             exclusive = true;
@@ -112,31 +122,54 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
             setSelectedFolders([]);
     };
 
-    const saveFile = (file:
-        VirtualFile
-    ) => {
-        if (newFileName === "") return;
-        const name = newFileName.split(".")[0];
-        const ext = newFileName.split(".")[1];
-        file.name = name;
-        file.extension = ext;
-        file.confirmChanges();
-        setNewFileName("");
-
+    const saveFile = (fileId: string) => {
+        const fileEntry = newFileNames.find(f => f.id === fileId);
+        if (fileEntry && fileEntry.name !== "") {
+            const file = directory.getFiles(showHidden).find(f => f.id === fileId);
+            if (file) {
+                const [name, extension = "txt"] = fileEntry.name.split(".");
+                file.name = name;
+                file.extension = extension;
+                file.isNew = false;
+                file.isRename = false;
+                file.confirmChanges();
+                setStateUpdate(state => !state);  // Force re-render
+            }
+            setNewFileNames(newFileNames.filter(f => f.id !== fileId));
+            directory.confirmChanges();
+        }
     };
 
-    const saveFolder = (folder:
-        VirtualFolder
-    ) => {
-        if (newFolderName === "") return;
-        folder.name = newFolderName;
-        folder.confirmChanges();
-        setNewFolderName("");
+    const saveFolder = (folderId: string) => {
+        const folderEntry = newFolderNames.find(f => f.id === folderId);
+        if (folderEntry && folderEntry.name !== "") {
+            const folder = directory.getSubFolders(showHidden).find(f => f.id === folderId);
+            if (folder) {
+                folder.name = folderEntry.name;
+                folder.isNew = false;
+                folder.isRename = false;
+                folder.confirmChanges();
+                setStateUpdate(state => !state);  // Force re-render
+            }
+            setNewFolderNames(newFolderNames.filter(f => f.id !== folderId));
+            directory.confirmChanges();
+        }
+    };
+
+    const deleteFile = (file: VirtualFile) => {
+        directory.remove(file);
+        setStateUpdate(state => !state);  // Force re-render
+    };
+
+    const deleteFolder = (folder: VirtualFolder) => {
+        directory.remove(folder);
+        setStateUpdate(state => !state);  // Force re-render
     };
 
     const onStartRectSelect = (event: MouseEvent) => {
         setRectSelectStart({ x: event.clientX, y: event.clientY } as Vector2);
     };
+
     const getRectSelectStyle = () => {
         let x: number, y: number, width: number, height: number = 0;
 
@@ -165,7 +198,6 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
             y -= containerRect.y;
         }
 
-
         return { top: y, left: x, width, height };
     };
 
@@ -180,82 +212,103 @@ export function DirectoryList({ directory, showHidden = false, folderClassName, 
     if (fileClassName)
         fileClassNames.push(fileClassName);
 
-    return <div
-        ref={ref}
-        className={classNames.join(" ")}
-        onClick={clearSelection}
-        onMouseDown={onStartRectSelect as unknown as MouseEventHandler}
-        {...props}
-    >
-        {rectSelectStart != null && rectSelectEnd != null
-            ? <div className={styles.SelectionRect} style={getRectSelectStyle()} />
-            : null
-        }
-        {directory?.getSubFolders(showHidden)?.map((folder, index) =>
-            <Interactable
-                key={folder.id}
-                tabIndex={0}
-                className={folderClassNames.join(" ")}
-                data-selected={selectedFolders.includes(folder.id)}
-                onContextMenu={(event: MouseEvent) => {
-                    onContextMenuFolder?.(event, folder);
-                }}
-                onClick={(event: MouseEvent) => {
-                    selectFolder(folder, !event.ctrlKey);
-                }}
-                onDoubleClick={(event: MouseEvent) => {
-                    onOpenFolder?.(event, folder);
-                }}
-            >
-                <div className={styles.FolderIcon}>
-                    <ImagePreview source={folder.getIconUrl()} onError={() => { folder.setIconUrl(null); }} />
-                </div>
-                {
-                    folder.id == "New Folder" ?
-                        <input id={folder.id + index} type="text" className={styles.Input} value={newFolderName}
-                            onChange={(e) => setNewFolderName(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") saveFolder(folder);
-                            }}
-                        /> :
-                        <p>{folder.name}</p>
-                }
-            </Interactable>
-        )}
-        {directory?.getFiles(showHidden)?.map((file, index) =>
-            <Interactable
-                key={file.id}
-                tabIndex={0}
-                className={fileClassNames.join(" ")}
-                data-selected={selectedFiles.includes(file.id)}
-                onContextMenu={(event: MouseEvent) => {
-                    onContextMenuFile?.(event, file);
-                }}
-                onClick={(event: MouseEvent) => {
-                    selectFile(file, !event.ctrlKey);
-                }}
-                onDoubleClick={(event: MouseEvent) => {
-                    onOpenFile?.(event, file);
-                }}
-            >
-                <div className={styles.FileIcon}>
-                    <ImagePreview source={file.getIconUrl()} onError={() => { file.setIconUrl(null); }} />
-                </div>
-                {
-                    file.id == "New File" ?
-                        <input id={file.id + index} type="text" className={styles.Input} value={newFileName}
-                            onChange={(e) => setNewFileName(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") saveFile(file);
-                            }}
-                            onBlur={() => {
-                               saveFile(file);
-                            }
-                            }
-                        /> :
-                        <p>{file.name}</p>
-                }
-            </Interactable>
-        )}
-    </div>;
+    return (
+        <div
+            ref={ref}
+            className={classNames.join(" ")}
+            onClick={clearSelection}
+            onMouseDown={onStartRectSelect as unknown as MouseEventHandler}
+            {...props}
+        >
+            {rectSelectStart != null && rectSelectEnd != null && (
+                <div className={styles.SelectionRect} style={getRectSelectStyle()} />
+            )}
+            {directory.getSubFolders(showHidden)?.map((folder) => {
+                const folderEntry = newFolderNames.find(f => f.id === folder.id);
+                const folderName = folderEntry ? folderEntry.name : folder.name;
+
+                return (
+                    <Interactable
+                        key={folder.id}
+                        tabIndex={0}
+                        className={folderClassNames.join(" ")}
+                        data-selected={selectedFolders.includes(folder.id)}
+                        onContextMenu={(event: MouseEvent) => onContextMenuFolder?.(event, folder)}
+                        onClick={(event: MouseEvent) => selectFolder(folder, !event.ctrlKey)}
+                        onDoubleClick={(event: MouseEvent) => onOpenFolder?.(event, folder)}
+                    >
+                        <div className={styles.FolderIcon}>
+                            <ImagePreview source={folder.getIconUrl()} onError={() => folder.setIconUrl(null)} />
+                        </div>
+                        {(folder.isNew || folder.isRename) ? (
+                            <input
+                                type="text"
+                                className={styles.Input}
+                                value={folderName}
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    setNewFolderNames((prev) =>
+                                        prev.map(f => f.id === folder.id ? { ...f, name: newValue } : f)
+                                    );
+                                    if (!folderEntry) {
+                                        setNewFolderNames((prev) => [...prev, { id: folder.id, name: newValue }]);
+                                    }
+                                }}
+                                autoFocus
+                                onBlur={() => saveFolder(folder.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") saveFolder(folder.id);
+                                }}
+                            />
+                        ) : (
+                            <p>{folder.name}</p>
+                        )}
+                    </Interactable>
+                );
+            })}
+            {directory.getFiles(showHidden)?.map((file) => {
+                const fileEntry = newFileNames.find(f => f.id === file.id);
+                const fileName = fileEntry ? fileEntry.name : file.name;
+
+                return (
+                    <Interactable
+                        key={file.id}
+                        tabIndex={0}
+                        className={fileClassNames.join(" ")}
+                        data-selected={selectedFiles.includes(file.id)}
+                        onContextMenu={(event: MouseEvent) => onContextMenuFile?.(event, file)}
+                        onClick={(event: MouseEvent) => selectFile(file, !event.ctrlKey)}
+                        onDoubleClick={(event: MouseEvent) => onOpenFile?.(event, file)}
+                    >
+                        <div className={styles.FileIcon}>
+                            <ImagePreview source={file.getIconUrl()} onError={() => file.setIconUrl(null)} />
+                        </div>
+                        {(file.isNew || file.isRename) ? (
+                            <input
+                                type="text"
+                                className={styles.Input}
+                                value={fileName}
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    setNewFileNames((prev) =>
+                                        prev.map(f => f.id === file.id ? { ...f, name: newValue } : f)
+                                    );
+                                    if (!fileEntry) {
+                                        setNewFileNames((prev) => [...prev, { id: file.id, name: newValue }]);
+                                    }
+                                }}
+                                autoFocus
+                                onBlur={() => saveFile(file.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") saveFile(file.id);
+                                }}
+                            />
+                        ) : (
+                            <p>{file.name}</p>
+                        )}
+                    </Interactable>
+                );
+            })}
+        </div>
+    );
 }

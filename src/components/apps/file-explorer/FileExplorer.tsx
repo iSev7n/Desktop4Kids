@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/indent */
 import { ChangeEventHandler, FC, KeyboardEventHandler, MouseEventHandler, useCallback, useEffect, useState } from "react";
 import { useVirtualRoot } from "../../../hooks/virtual-drive/virtualRootContext";
 import styles from "./FileExplorer.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp, faCaretLeft, faCaretRight, faCircleInfo, faCog, faDesktop, faEye, faFileLines, faFileVideo, faFolder, faFolderBlank, faFolderTree, faHouse, faImage, faPlus, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp, faCaretLeft, faCaretRight, faCircleInfo, faCog, faDesktop, faEye, faFile, faFileLines, faFileVideo, faFolder, faFolderBlank, faFolderTree, faHouse, faImage, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useWindowsManager } from "../../../hooks/windows/windowsManagerContext";
 import { useContextMenu } from "../../../hooks/modals/contextMenu";
 import { QuickAccessButton } from "./QuickAccessButton";
@@ -30,7 +29,6 @@ import { VirtualFolderLink } from "../../../features/virtual-drive/folder/virtua
 import { ImportButton } from "./ImportButton";
 import { useAlert } from "../../../hooks/modals/alert";
 import { VirtualRoot } from "../../../features/virtual-drive/root/virtualRoot";
-import { Modal } from "../../../features/modals/modal";
 import { DropdownAction } from "../../actions/actions/DropdownAction";
 import CreateMenu from "../../taskbar/menus/CreateMenu";
 
@@ -48,11 +46,38 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
     const virtualRoot = useVirtualRoot();
     const [currentDirectory, setCurrentDirectory] = useState<VirtualFolder>(virtualRoot?.navigate(startPath ?? "~") as VirtualFolder);
     const [path, setPath] = useState<string>(currentDirectory?.path ?? "");
+    const [forceRenderKey, setForceRenderKey] = useState<number>(0);
     const windowsManager = useWindowsManager();
     const [showHidden] = useState(true);
     const { history, stateIndex, pushState, undo, redo, undoAvailable, redoAvailable } = useHistory<string>(currentDirectory.path);
     const { alert } = useAlert();
     const [selectedFileType, setSelectedFileType] = useState<string>("");
+
+    const forceUpdate = () => setForceRenderKey(prev => prev + 1);
+
+    const renameFile = (file: VirtualFile) => {
+        file.isRename = true;
+        file.confirmChanges();
+        forceUpdate();  // Force re-render
+    };
+
+    const renameFolder = (file: VirtualFolder) => {
+        file.isRename = true;
+        file.confirmChanges();
+        forceUpdate();  // Force re-render
+    };
+
+    const deleteFile = (file: VirtualFile) => {
+        currentDirectory.remove(file);
+        currentDirectory.confirmChanges();
+        forceUpdate();  // Force re-render
+    };
+
+    const deleteFolder = (folder: VirtualFolder) => {
+        currentDirectory.remove(folder);
+        currentDirectory.confirmChanges();
+        forceUpdate();  // Force re-render
+    };
 
     const { openWindowedModal } = useWindowedModal();
     const { onContextMenu: onContextMenuFile } = useContextMenu({
@@ -66,8 +91,11 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
                     }
                     if (windowsManager != null) (file as VirtualFile).open(windowsManager);
                 }} />
+                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, file) => {
+                    renameFile(file as VirtualFile);
+                }} />
                 <ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
-                    (file as VirtualFile).delete();
+                    deleteFile(file as VirtualFile);
                 }} />
                 <ClickAction label="Properties" icon={faCircleInfo} onTrigger={(event, file) => {
                     openWindowedModal({
@@ -89,8 +117,11 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
                     windowsManager?.open(APPS.TERMINAL, { startPath: (folder as VirtualFolder).path });
                 }} />
                 <Divider />
+                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, folder) => {
+                    renameFolder(folder as VirtualFolder);
+                }} />
                 <ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
-                    (folder as VirtualFolder).delete();
+                    deleteFolder(folder as VirtualFolder);
                 }} />
             </Actions>
     });
@@ -98,7 +129,6 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
     const [newModalOpen, setNewModalOpen] = useState(false);
     const [newItemType, setNewItemType] = useState<"File" | "Folder" | null>(null);
     const [newItemName, setNewItemName] = useState("");
-
 
     const onNew = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -109,23 +139,21 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
         setNewModalOpen(false);
     };
 
+    const handleCreateFile = () => {
+        if (currentDirectory) {
+            currentDirectory.createFile("New File", "txt");
+            currentDirectory.confirmChanges();
+            forceUpdate();  // Force re-render
+        }
+    };
 
-  
-
-    // const createNewFile = () => {
-    //     if (newItemType === "File" && newItemName) {
-    //         const extension = newItemName.split(".")[1] || "txt";
-    //         const name = newItemName.split(".")[0];
-    //         currentDirectory.createFile(name, extension);
-    //     } else if (newItemType === "Folder" && newItemName) {
-    //         currentDirectory.createFolder(newItemName);
-    //     }
-    //     // Close the modal after creating file or folder
-    //     setNewModalOpen(false);
-    //     setNewItemName("");
-    //     setNewItemType(null);
-    // };
-
+    const handleCreateFolder = () => {
+        if (currentDirectory) {
+            currentDirectory.createFolder("New Folder");
+            currentDirectory.confirmChanges();
+            forceUpdate();  // Force re-render
+        }
+    };
 
     const changeDirectory = useCallback((path: string, absolute = false) => {
         if (path == null)
@@ -211,10 +239,12 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
     const { onContextMenu, ShortcutsListener } = useContextMenu({
         Actions: (props) =>
             <Actions {...props}>
-              
-                <CreateMenu path={startPath}/>
-                <Divider />
 
+                <DropdownAction label="New" icon={faFolderTree}>
+                    <ClickAction label="New File" icon={faFile} onTrigger={handleCreateFile} />
+                    <Divider />
+                    <ClickAction label="New Folder" icon={faFolder} onTrigger={handleCreateFolder} />
+                </DropdownAction>
             </Actions>
     });
 
@@ -222,8 +252,10 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
         <>
             <ShortcutsListener />
             <div
+                key={forceRenderKey}  // Use the forceRenderKey to trigger re-renders
                 onContextMenu={onContextMenu as unknown as MouseEventHandler}
-                className={!isSelector ? styles.FileExplorer : `${styles.FileExplorer} ${styles.Selector}`}>
+                className={!isSelector ? styles.FileExplorer : `${styles.FileExplorer} ${styles.Selector}`}
+            >
                 <div className={styles.Header}>
                     <button
                         title="Back"
@@ -252,15 +284,6 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
                     >
                         <FontAwesomeIcon icon={faArrowUp} />
                     </button>
-                    {/* <button
-                        title="New"
-                        tabIndex={0}
-                        className={styles.IconButton}
-                        onClick={onNew}
-                        disabled={!currentDirectory.canBeEdited}
-                    >
-                        <FontAwesomeIcon icon={faPlus} />
-                    </button> */}
                     <input
                         value={path}
                         type="text"
@@ -323,43 +346,6 @@ export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectio
                         <Footer />
                     </div>
                 }
-                {/* New item modal */}
-                {/* {newModalOpen && (
-
-                    <DialogBox
-                        title="New"
-                        iconUrl={AppsManager.getAppIconUrl(APPS.FILE_EXPLORER)}
-                        size={new Vector2(300, 500)}
-                        onFinish={handleClose}
-                    >
-                        <div >
-                            <p>Select the type of item to create:</p>
-                            <div className={styles.flex}>
-                                <button onClick={() => setNewItemType("File")}>New File</button>
-                                <button onClick={() => setNewItemType("Folder")}>New Folder</button>
-                            </div>
-                            {newItemType && (
-                                <>
-                                    <p>Enter the name:</p>
-                                    <div className={styles.flex}>
-                                        <input
-                                            type="text"
-                                            value={newItemName}
-                                            className={styles.Input}
-                                            onChange={(e) => setNewItemName(e.target.value)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") createNewFile();
-                                            }}
-                                        />
-                                        <button onClick={createNewFile}>Create</button>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-
-
-                    </DialogBox>
-                )} */}
             </div>
         </>
     );

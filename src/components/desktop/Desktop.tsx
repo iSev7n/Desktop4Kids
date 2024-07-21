@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import React, { memo, MouseEventHandler, useState, useEffect } from "react";
 import { SettingsManager } from "../../features/settings/settingsManager";
 import { useSettingsManager } from "../../hooks/settings/settingsManagerContext";
@@ -13,7 +12,7 @@ import { APPS, APP_ICONS, APP_NAMES } from "../../config/apps.config";
 import { Vector2 } from "../../features/math/vector2";
 import { Actions } from "../actions/Actions";
 import { ClickAction } from "../actions/actions/ClickAction";
-import { faArrowsRotate, faCompress, faExpand, faEye, faFolder, faFolderBlank, faFolderTree, faPaintBrush, faTerminal, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsRotate, faCompress, faExpand, faEye, faFile, faFolder, faFolderBlank, faFolderTree, faPaintBrush, faTerminal, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ToggleAction } from "../actions/actions/ToggleAction";
 import { DropdownAction } from "../actions/actions/DropdownAction";
 import { RadioAction } from "../actions/actions/RadioAction";
@@ -36,13 +35,57 @@ export const Desktop = memo(() => {
     const [showIcons, setShowIcons] = useState(false);
     const [iconSize, setIconSize] = useState(FALLBACK_ICON_SIZE);
     const [iconDirection, setIconDirection] = useState(FALLBACK_ICON_DIRECTION);
+    const [stateUpdate, setStateUpdate] = useState(false);  // State to force re-render
     const { openWindowedModal } = useWindowedModal();
 
     const directory = virtualRoot?.navigate("~/Desktop");
 
-   
+    const deleteFile = (file: VirtualFile) => {
+        file.delete();
+        setStateUpdate(state => !state);  // Force re-render
+    };
+    
+    const deleteFolder = (folder: VirtualFolder) => {
+        folder.delete();
+        setStateUpdate(state => !state);  // Force re-render
+    };
 
-   
+    const renameFile = (file: VirtualFile) => {
+        file.isRename = true;
+        const index = (directory as VirtualFolder)?.files?.findIndex((f: { id: string; }) => f.id === file.id);
+        if (index !== -1) {
+            (directory as VirtualFolder).files[index] = file;
+        }
+        file.confirmChanges();
+        setStateUpdate(state => !state);  // Force re-render
+    };
+
+    const renameFolder = (file: VirtualFolder) => {
+        file.isRename = true;
+        const index = (directory as VirtualFolder)?.subFolders?.findIndex((f: { id: string; }) => f.id === file.id);
+        if (index !== -1) {
+            (directory as VirtualFolder).subFolders[index] = file;
+        }
+        directory?.confirmChanges();
+        file.confirmChanges();
+        setStateUpdate(state => !state);  // Force re-render
+    };
+
+    const handleCreateFile = () => {
+        if (directory) {
+            (directory as VirtualFolder).createFile("New File", "txt");
+            (directory as VirtualFolder).confirmChanges();
+            setStateUpdate(state => !state);  // Force re-render
+        }
+    };
+
+    const handleCreateFolder = () => {
+        if (directory) {
+            (directory as VirtualFolder).createFolder("New Folder");
+            (directory as VirtualFolder).confirmChanges();
+            setStateUpdate(state => !state);  // Force re-render
+        }
+    };
 
     const { onContextMenu, ShortcutsListener } = useContextMenu({
         Actions: (props) =>
@@ -103,7 +146,11 @@ export const Desktop = memo(() => {
                     windowsManager?.open(APPS.TERMINAL, { path: directory?.path });
                 }} />
                 <Divider />
-                <CreateMenu path={directory?.path} />
+                <DropdownAction label="New" icon={faFolderTree}>
+                    <ClickAction label="New File" icon={faFile} onTrigger={handleCreateFile} />
+                    <Divider />
+                    <ClickAction label="New Folder" icon={faFolder} onTrigger={handleCreateFolder} />
+                </DropdownAction>
                 <Divider />
                 <ClickAction label={"Share"} icon={ModalsManager.getModalIconUrl("share")} onTrigger={() => {
                     openWindowedModal({
@@ -123,8 +170,12 @@ export const Desktop = memo(() => {
                 <ClickAction label={`Reveal in ${APP_NAMES.FILE_EXPLORER}`} icon={faFolder} onTrigger={(event, file) => {
                     if (windowsManager != null) (file as VirtualFile).parent?.open(windowsManager);
                 }} />
+                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, file) => {
+                    renameFile(file as VirtualFile);
+                }} />
                 <ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
                     (file as VirtualFile).delete();
+                    setStateUpdate(state => !state);  // Force re-render
                 }} />
             </Actions>
     });
@@ -142,8 +193,12 @@ export const Desktop = memo(() => {
                     if (windowsManager != null) (folder as VirtualFolder).parent?.open(windowsManager);
                 }} />
                 <Divider />
+                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, folder) => {
+                    renameFolder(folder as VirtualFolder);
+                }} />
                 <ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
                     (folder as VirtualFolder).delete();
+                    setStateUpdate(state => !state);  // Force re-render
                 }} />
             </Actions>
     });
@@ -175,50 +230,48 @@ export const Desktop = memo(() => {
 
     const iconScale = 1 + ((isValidInteger(iconSize) ? iconSize : FALLBACK_ICON_SIZE) - 1) / 5;
 
+    return (
+        <>
+            <ShortcutsListener />
+            <div
+                className={styles.Desktop}
+                onContextMenu={onContextMenu as unknown as MouseEventHandler}
+            >
+                {showIcons && <DirectoryList
+                    directory={directory as VirtualFolder}
+                    className={styles.Content}
+                    style={{
+                        "--scale": `${iconScale}rem`,
+                        "--direction": iconDirection == 1 ? "row" : "column"
+                    }}
+                    fileClassName={styles["Item"]}
+                    folderClassName={styles["Item"]}
+                    onOpenFile={(event, file) => {
+                        (event).preventDefault();
 
+                        const options: Record<string, unknown> = {};
+                        if (file.name === "Info.md")
+                            options.size = new Vector2(575, 675);
+                        if (file.extension === "md")
+                            options.mode = "view";
 
-
-    return (<>
-        <ShortcutsListener />
-        <div
-            className={styles.Desktop}
-            onContextMenu={onContextMenu as unknown as MouseEventHandler}
-        >
-            {showIcons && <DirectoryList
-                directory={directory as VirtualFolder}
-                className={styles.Content}
-                style={{
-                    "--scale": `${iconScale}rem`,
-                    "--direction": iconDirection == 1 ? "row" : "column"
-                }}
-                fileClassName={styles["Item"]}
-                folderClassName={styles["Item"]}
-                onOpenFile={(event, file) => {
-                    (event).preventDefault();
-
-                    const options: Record<string, unknown> = {};
-                    if (file.name === "Info.md")
-                        options.size = new Vector2(575, 675);
-                    if (file.extension === "md")
-                        options.mode = "view";
-
-                    windowsManager?.openFile(file, options);
-                }}
-                onOpenFolder={(event, folder) => {
-                    windowsManager?.open(APPS.FILE_EXPLORER, {
-                        path: (folder as VirtualFolder).path
-                    });
-                }}
-                onContextMenuFile={onContextMenuFile as unknown as FileEventHandler}
-                onContextMenuFolder={onContextMenuFolder as unknown as FolderEventHandler}
-            />}
-            {wallpaper
-                ? <img src={wallpaper} className={styles.Wallpaper} alt="Desktop wallpaper" onError={onError} />
-                : null
-            }
-        </div>
-
-    </>);
+                        windowsManager?.openFile(file, options);
+                    }}
+                    onOpenFolder={(event, folder) => {
+                        windowsManager?.open(APPS.FILE_EXPLORER, {
+                            path: (folder as VirtualFolder).path
+                        });
+                    }}
+                    onContextMenuFile={onContextMenuFile as unknown as FileEventHandler}
+                    onContextMenuFolder={onContextMenuFolder as unknown as FolderEventHandler}
+                />}
+                {wallpaper
+                    ? <img src={wallpaper} className={styles.Wallpaper} alt="Desktop wallpaper" onError={onError} />
+                    : null
+                }
+            </div>
+        </>
+    );
 });
 
 export default Desktop;

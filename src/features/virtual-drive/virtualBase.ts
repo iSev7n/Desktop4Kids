@@ -21,10 +21,14 @@ export class VirtualBase extends EventEmitter<EventNamesMap> {
 	editedByUser: boolean | undefined | null;
 	isRoot: boolean | undefined | null;
 	root: VirtualRoot | undefined | null;
+    isNew: boolean;
+    isRename:boolean;
 
 	constructor(name: string) {
 		super();
 		this.name = name;
+        this.isNew = false;
+        this.isRename = false;
 	}
 
 	get id() {
@@ -90,6 +94,10 @@ export class VirtualBase extends EventEmitter<EventNamesMap> {
 	getType(): string {
 		return "None";
 	}
+    
+    rename(){
+        
+    }
 
 	delete() {
 		if (!this.canBeEdited)
