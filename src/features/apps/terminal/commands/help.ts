@@ -1,15 +1,17 @@
+// help.ts
 import { ANSI } from "../../../../config/apps/terminal.config";
 import { formatError } from "../_utils/terminal.utils";
 import { Command } from "../command";
 import { CommandsManager } from "../commands";
-import { helpTexts } from "./helpTexts"; // Import the help texts
+import { helpTexts } from "./helpTexts";
 
 export const help = new Command()
-.setManual({
-	purpose: "Display list of help commands",
-	usage: "help [command]",
-	description: "Display a list of help commands or detailed help for a specific command."
-})
+    .setName('help')
+    .setManual({
+        purpose: "Display list of help commands",
+        usage: "help [command]",
+        description: "Display a list of help commands or detailed help for a specific command."
+    })
     .setExecute(function(this: Command, args) {
         if (args?.length === 0) {
             return CommandsManager.COMMANDS.map((command) => {
@@ -27,7 +29,7 @@ export const help = new Command()
         if (!command)
             return formatError(this.name, `${commandName}: Command not found`);
 
-        const helpText = helpTexts[commandName]; // Retrieve the help text
+        const helpText = helpTexts[commandName];
 
         if (helpText) {
             return helpText;

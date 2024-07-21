@@ -1,3 +1,4 @@
+// command.ts
 import { SettingsManager } from "../../settings/settingsManager";
 import { VirtualFolder } from "../../virtual-drive/folder/virtualFolder";
 import { VirtualRoot } from "../../virtual-drive/root/virtualRoot";

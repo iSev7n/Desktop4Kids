@@ -1,3 +1,4 @@
+// commands.ts
 import { Command } from "./command";
 
 let commands: Command[] = [];
@@ -9,11 +10,16 @@ const loadCommands = () => {
     commands = [];
     const modules = import.meta.glob("./commands/*.ts");
     for (const path in modules) {
+        if (path.includes("helpTexts.ts")) continue; // Exclude helpTexts.ts
         void modules[path]().then((commandModule) => {
             const commandName = Object.keys(commandModule as Record<string, Command>)[0];
             const command = (commandModule as Record<string, Command>)[commandName];
-            command.setName(commandName.toLowerCase());
-            commands.push(command);
+            if (typeof command.setName === 'function') {
+                command.setName(commandName.toLowerCase());
+                commands.push(command);
+            } else {
+                console.error(`Failed to load command from ${path}: setName is not a function`);
+            }
         }).catch((error) => {
             console.error(`Failed to load command from ${path}:`, error);
         });
