@@ -10,3 +10,4 @@ export const hostname = new Command()
         const { hostname } = params as ExecuteParams;
         return hostname;
     });
+
