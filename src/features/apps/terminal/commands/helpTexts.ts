@@ -105,5 +105,25 @@ Display text on the terminal screen.
 Examples:
   echo Hello, world!
   This command will display 'Hello, world!' on the terminal.
+`,
+man: `
+Usage: man [options] page
+   man -k [options] regexp
+
+Show system reference manuals.
+
+Options:
+-k    Search for manual page using regexp.
+
+Description:
+Each page argument given to man is normally the name of a command.
+The manual page associated with this command is then found and displayed.
+
+Examples:
+man ls
+This command will display the manual page for the 'ls' command.
+
+man -k copy
+This command will search for all manual pages that mention the word 'copy'.
 `
 };
