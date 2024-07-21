@@ -17,357 +17,320 @@ import { SettingsManager } from "../../../features/settings/settingsManager";
 import { clamp } from "../../../features/_utils/math.utils";
 
 interface TerminalProps extends WindowProps {
-	path: string;
-	input: string;
+    path: string;
+    input: string;
 }
 
 interface HistoryEntry {
-	text: string;
-	isInput: boolean;
-	value?: string;
-	clear?: boolean;
+    text: string;
+    isInput: boolean;
+    value?: string;
+    clear?: boolean;
 }
 
 export function Terminal({ path: startPath, input, setTitle, close: exit, active, focus }: TerminalProps) {
-	const [inputKey, setInputKey] = useState(0);
-	const [inputValue, setInputValue] = useState(input ?? "");
-	const [history, setHistory] = useState<HistoryEntry[]>([{
-		text: WELCOME_MESSAGE.replace("$APP_NAME", APP_NAMES.TERMINAL),
-		isInput: false,
-	}]);
-	const virtualRoot = useVirtualRoot();
-	const [currentDirectory, setCurrentDirectory] = useState(virtualRoot?.navigate(startPath ?? "~"));
-	const inputRef = useRef(null);
-	const [historyIndex, setHistoryIndex] = useState(0);
-	const [stream, setStream] = useState<Stream | null>(null);
-	const [streamOutput, setStreamOutput] = useState<string | null>(null);
-	const ref = useRef(null);
-	const [streamFocused, setStreamFocused] = useState(false);
-	const settingsManager = useSettingsManager();
+    const [inputKey, setInputKey] = useState(0);
+    const [inputValue, setInputValue] = useState(input ?? "");
+    const [history, setHistory] = useState<HistoryEntry[]>([{
+        text: WELCOME_MESSAGE.replace("$APP_NAME", APP_NAMES.TERMINAL),
+        isInput: false,
+    }]);
+    const virtualRoot = useVirtualRoot();
+    const [currentDirectory, setCurrentDirectory] = useState(virtualRoot?.navigate(startPath ?? "~"));
+    const inputRef = useRef(null);
+    const [historyIndex, setHistoryIndex] = useState(0);
+    const [stream, setStream] = useState<Stream | null>(null);
+    const [streamOutput, setStreamOutput] = useState<string | null>(null);
+    const ref = useRef(null);
+    const [streamFocused, setStreamFocused] = useState(false);
+    const settingsManager = useSettingsManager();
 
-	useEffect(() => {
-		if (currentDirectory != null)
-			setTitle?.(`${USERNAME}@${HOSTNAME}: ${currentDirectory.root ? "/" : currentDirectory.path}`);
-	}, [currentDirectory?.path, currentDirectory?.root, setTitle]);
+    useEffect(() => {
+        if (currentDirectory != null) setTitle?.(`${USERNAME}@${HOSTNAME}: ${currentDirectory.root ? "/" : currentDirectory.path}`);
+    }, [currentDirectory?.path, currentDirectory?.root, setTitle]);
 
-	useEffect(() => {
-		if (!inputRef.current || !active)
-			return;
+    useEffect(() => {
+        if (!inputRef.current || !active) return;
+        (inputRef.current as unknown as HTMLInputElement).focus();
+    }, [inputRef, active]);
 
-		(inputRef.current as unknown as HTMLInputElement).focus();
-	}, [inputRef, active]);
+    const scrollDown = () => {
+        (ref.current as unknown as HTMLDivElement).scrollTop = (ref.current as unknown as HTMLDivElement).scrollHeight;
+    };
 
-	const scrollDown = () => {
-		(ref.current as unknown as HTMLDivElement).scrollTop = (ref.current as unknown as HTMLDivElement).scrollHeight;
-	};
+    useEffect(() => {
+        if (streamFocused || ref.current == null || streamOutput == null) return;
+        scrollDown();
+        setStreamFocused(true);
+    }, [streamFocused, streamOutput, ref]);
 
-	useEffect(() => {
-		if (streamFocused || ref.current == null || streamOutput == null)
-			return;
+    useEffect(() => {
+        if (ref.current == null || stream != null) return;
+        scrollDown();
+    }, [inputValue]);
 
-		scrollDown();
-		setStreamFocused(true);
-	}, [streamFocused, streamOutput, ref]);
+    const prefix = `${ANSI.fg.cyan + USERNAME}@${HOSTNAME + ANSI.reset}:`
+        + `${ANSI.fg.blue + ((currentDirectory?.root || currentDirectory == null) ? "/" : currentDirectory?.path) + ANSI.reset}$ `;
 
-	useEffect(() => {
-		if (ref.current == null || stream != null)
-			return;
+    const updatedHistory = history;
+    const pushHistory = (entry: HistoryEntry) => {
+        updatedHistory.push(entry);
+        setHistory(updatedHistory);
+    };
 
-		scrollDown();
-	}, [inputValue]);
+    const promptOutput = (text: string) => {
+        pushHistory({
+            text,
+            isInput: false
+        });
+    };
 
-	const prefix = `${ANSI.fg.cyan + USERNAME}@${HOSTNAME + ANSI.reset}:`
-		+ `${ANSI.fg.blue + ((currentDirectory?.root || currentDirectory == null) ? "/" : currentDirectory?.path) + ANSI.reset}$ `;
+    const connectStream = (stream: Stream, pipes: string[]) => {
+        setStream(stream);
+        setStreamFocused(false);
 
-	const updatedHistory = history;
-	const pushHistory = (entry: HistoryEntry) => {
-		updatedHistory.push(entry);
-		setHistory(updatedHistory);
-	};
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (active && (event.ctrlKey || event.metaKey) && event.key === "c") {
+                stream.stop();
+            }
+        };
 
-	const promptOutput = (text: string) => {
-		pushHistory({
-			text,
-			isInput: false
-		});
-	};
+        let lastOutput: CommandResponse | null = null;
 
-	const connectStream = (stream: Stream, pipes: string[]) => {
-		setStream(stream);
-		setStreamFocused(false);
+        stream.on(Stream.EVENT_NAMES.new, (text) => {
+            void (async () => {
+                let output: CommandResponse = text as CommandResponse;
+                for (const pipe of pipes) {
+                    if (output instanceof Stream) continue;
+                    output = await handleInput(output ? `${pipe} ${output as string}` : pipe);
+                }
+                if ((output as unknown) instanceof Stream) {
+                    stream.stop();
+                    promptOutput(ANSI.fg.red + "Stream failed");
+                    return;
+                }
+                lastOutput = output;
+                setStreamOutput(output as string);
+            })();
+        });
 
-		const onKeyDown = (event: KeyboardEvent) => {
-			if (active && (event.ctrlKey || event.metaKey) && event.key === "c") {
-				stream.stop();
-			}
-		};
+        stream.on(Stream.EVENT_NAMES.stop, () => {
+            document.removeEventListener("keydown", onKeyDown);
+            promptOutput(lastOutput as string);
+            setStream(null);
+            setStreamOutput(null);
+        });
 
-		let lastOutput: CommandResponse | null = null;
+        document.addEventListener("keydown", onKeyDown);
+    };
 
-		stream.on(Stream.EVENT_NAMES.new, (text) => {
-			void (async () => {
-				let output: CommandResponse = text as CommandResponse;
+    const handleInput = async (value: string): Promise<CommandResponse> => {
+        const rawInputValueStart = value.indexOf(" ") + 1;
+        const rawInputValue = rawInputValueStart <= 0 ? "" : value.substr(rawInputValueStart);
+        const timestamp = Date.now();
 
-				for (const pipe of pipes) {
-					if (output instanceof Stream)
-						continue;
-		
-					// Output from the previous command gets added as an argument for the next command
-					output = await handleInput(output ? `${pipe} ${output as string}` : pipe);
-				}
+        value = value.trim();
+        if (value === "") return;
 
-				if ((output as unknown) instanceof Stream) {
-					stream.stop();
-					promptOutput(ANSI.fg.red + "Stream failed");
-					return;
-				}
+        // Parse arguments
+        const args = value.match(/(?:[^\s"]+|"[^"]*")+/g);
+        if (args == null) return;
+        if (args[0].toLowerCase() === "sudo" && args.length >= 2) args.shift();
 
-				lastOutput = output;
-				setStreamOutput(output as string);
-			})();
-		});
+        // Get command
+        const commandName = args.shift()?.toLowerCase();
+        if (commandName == null) return;
+        const command = CommandsManager.find(commandName);
 
-		stream.on(Stream.EVENT_NAMES.stop, () => {
-			document.removeEventListener("keydown", onKeyDown);
+        if (!command) return formatError(commandName, "Command not found");
 
-			promptOutput(lastOutput as string);
+        // Get options
+        const options: string[] = [];
+        const inputs: Record<string, string> = {};
+        args.filter((arg: string) => arg.startsWith("-")).forEach((option: string) => {
+            const addOption = (key: string) => {
+                if (options.includes(key)) return;
+                options.push(key);
+                const commandOption = command.getOption(options[options.length - 1]);
+                if (commandOption?.isInput) {
+                    const optionInput = args[args.indexOf(option) + 1];
+                    inputs[commandOption.short] = optionInput;
+                    removeFromArray(optionInput, args);
+                }
+            };
 
-			setStream(null);
-			setStreamOutput(null);
-		});
-		
-		document.addEventListener("keydown", onKeyDown);
-	};
+            if (option.startsWith("--")) {
+                const longOption = option.substring(2).toLowerCase();
+                addOption(longOption);
+            } else {
+                const shortOptions = option.substring(1).split("");
+                shortOptions.forEach((shortOption: string) => {
+                    addOption(shortOption);
+                });
+            }
 
-	const handleInput = async (value: string): Promise<CommandResponse> => {
-		const rawInputValueStart = value.indexOf(" ") + 1;
-		const rawInputValue = rawInputValueStart <= 0 ? "" : value.substr(rawInputValueStart);
-		const timestamp = Date.now();
+            removeFromArray(option, args);
+        });
 
-		value = value.trim();
-		if (value === "") return;
+        // Check usage
+        if (command.requireArgs && args.length === 0) return formatError(commandName, `Incorrect usage: ${commandName} requires at least 1 argument`);
+        if (command.requireOptions && options.length === 0) return formatError(commandName, `Incorrect usage: ${commandName} requires at least 1 option`);
 
-		// Parse arguments
-		const args = value.match(/(?:[^\s"]+|"[^"]*")+/g);
-		if (args == null) return;
-		if (args[0].toLowerCase() === "sudo" && args.length >= 2) args.shift();
+        // Execute command
+        let response: CommandResponse | null = null;
 
-		// Get command
-		const commandName = args.shift()?.toLowerCase();
-		if (commandName == null) return;
-		const command = CommandsManager.find(commandName);
+        try {
+            response = await command.execute(args, {
+                promptOutput,
+                pushHistory,
+                virtualRoot,
+                currentDirectory: currentDirectory as VirtualFolder,
+                setCurrentDirectory,
+                username: USERNAME,
+                hostname: HOSTNAME,
+                rawInputValue,
+                options,
+                exit,
+                inputs,
+                timestamp,
+                settingsManager: settingsManager as SettingsManager,
+            });
 
-		if (!command) return formatError(commandName, "Command not found");
+            if (response == null) return formatError(commandName, "Command failed");
+            if (!(response as { blank: boolean }).blank) return response;
+        } catch (error) {
+            console.error(error);
+            return formatError(commandName, "Command failed");
+        }
+    };
 
-		// Get options
-		const options: string[] = [];
-		const inputs: Record<string, string> = {};
-		args.filter((arg: string) => arg.startsWith("-")).forEach((option: string) => {
-			const addOption = (key: string) => {
-				if (options.includes(key))
-					return;
+    const resetInput = () => {
+        setInputValue("");
+        setHistoryIndex(0);
+    };
 
-				options.push(key);
-				const commandOption = command.getOption(options[options.length - 1]);
+    const submitInput = async (value: string) => {
+        pushHistory({
+            text: prefix + value,
+            isInput: true,
+            value
+        });
 
-				if (commandOption?.isInput) {
-					const optionInput = args[args.indexOf(option) + 1];
-					inputs[commandOption.short] = optionInput;
-					removeFromArray(optionInput, args);
-				}
-			};
+        // Piping is used to chain commands
+        let pipes = value.split(" | ");
+        const completedPipes: string[] = [];
 
-			if (option.startsWith("--")) {
-				const longOption = option.substring(2).toLowerCase();
-				addOption(longOption);
-			} else {
-				const shortOptions = option.substring(1).split("");
-				shortOptions.forEach((shortOption: string) => {
-					addOption(shortOption);
-				});
-			}
-			
-			removeFromArray(option, args);
-		});
+        let output: CommandResponse | null = null;
+        for (const pipe of pipes) {
+            if (output instanceof Stream) continue;
+            output = await handleInput(output ? `${pipe} ${output as string}` : pipe);
+            completedPipes.push(pipe);
+        }
 
-		// Check usage
-		if (command.requireArgs && args.length === 0)
-			return formatError(commandName, `Incorrect usage: ${commandName} requires at least 1 argument`);
+        resetInput();
+        pipes = pipes.filter((pipe) => !completedPipes.includes(pipe));
 
-		if (command.requireOptions && options.length === 0)
-			return formatError(commandName, `Incorrect usage: ${commandName} requires at least 1 option`);
-		
-		// Execute command
-		let response: CommandResponse | null = null;
+        if (output) {
+            if (output instanceof Stream) {
+                connectStream(output, pipes);
+            } else {
+                promptOutput(`${output as string}\n`);
+            }
+        }
+    };
 
-		try {
-			response = await command.execute(args, {
-				promptOutput,
-				pushHistory,
-				virtualRoot,
-				currentDirectory: currentDirectory as VirtualFolder,
-				setCurrentDirectory,
-				username: USERNAME,
-				hostname: HOSTNAME,
-				rawInputValue,
-				options,
-				exit,
-				inputs,
-				timestamp,
-				settingsManager: settingsManager as SettingsManager,
-			});
+    const updateHistoryIndex = (delta: number) => {
+        const inputHistory = history.filter(({ isInput }) => isInput);
+        const index = clamp(historyIndex + delta, 0, inputHistory.length);
+        if (index === historyIndex) {
+            if (delta < 0) {
+                setInputValue("");
+            }
+            return;
+        }
+        if (index === 0) {
+            setInputValue("");
+        } else {
+            setInputValue(inputHistory[inputHistory.length - index].value ?? "");
+        }
+        setHistoryIndex(index);
+    };
 
-			if (response == null)
-				return formatError(commandName, "Command failed");
-			
-			if (!(response as { blank: boolean }).blank)
-				return response;
-		} catch (error) {
-			console.error(error);
-			return formatError(commandName, "Command failed");
-		}
-	};
+    const onKeyDown = (event: KeyboardEvent) => {
+        const value = (event.target as HTMLInputElement).value;
+        const { key } = event;
 
-	const resetInput = () => {
-		setInputValue("");
-		setHistoryIndex(0);
-	};
+        if (key === "Enter") {
+            void submitInput(value);
+            setInputKey((previousKey) => previousKey + 1);
+        } else if (key === "ArrowUp") {
+            event.preventDefault();
+            updateHistoryIndex(1);
+        } else if (key === "ArrowDown") {
+            event.preventDefault();
+            updateHistoryIndex(-1);
+        } else if (!stream && (event.ctrlKey || event.metaKey) && key === "c") {
+            setInputValue((value) => value + "^C");
+        }
+    };
 
-	const submitInput = async (value: string) => {
-		pushHistory({
-			text: prefix + value,
-			isInput: true,
-			value
-		});
+    const onChange = (event: KeyboardEvent) => {
+        const value = (event.target as HTMLInputElement).value;
+        return setInputValue(value);
+    };
 
-		// Piping is used to chain commands
-		let pipes = value.split(" | ");
-		const completedPipes: string[] = [];
+    const displayHistory = () => {
+        const visibleHistory = history.slice(-16);
+        let startIndex = 0;
+        visibleHistory.forEach((entry, index) => {
+            if (entry.clear) startIndex = index + 1;
+        });
+        return visibleHistory.slice(startIndex).map(({ text }, index) => {
+            return <OutputLine text={text} key={index} />;
+        });
+    };
 
-		let output: CommandResponse | null = null;
-		for (const pipe of pipes) {
-			if (output instanceof Stream)
-				continue;
+    const onMouseDown = (event: MouseEvent) => {
+        focus?.(event);
+        if (event.button === 2) {
+            event.preventDefault();
+            navigator.clipboard.readText?.().then((text) => {
+                setInputValue(inputValue + text);
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+    };
 
-			// Output from the previous command gets added as an argument for the next command
-			output = await handleInput(output ? `${pipe} ${output as string}` : pipe);
-			completedPipes.push(pipe);
-		}
+    const onContextMenu = (event: Event) => {
+        event.preventDefault();
+    };
 
-		resetInput();
-
-		pipes = pipes.filter((pipe) => !completedPipes.includes(pipe));
-
-		if (output) {
-			if (output instanceof Stream) {
-				connectStream(output, pipes);
-			} else {
-				promptOutput(`${output as string}\n`);
-			}
-		}
-	};
-
-	const updateHistoryIndex = (delta: number) => {
-		const inputHistory = history.filter(({ isInput }) => isInput);
-		const index = clamp(historyIndex + delta, 0, inputHistory.length);
-
-		if (index === historyIndex) {
-			if (delta < 0) {
-				setInputValue("");
-			}
-
-			return;
-		}
-
-		if (index === 0) {
-			setInputValue("");
-		} else {
-			setInputValue(inputHistory[inputHistory.length - index].value ?? "");
-		}
-
-		setHistoryIndex(index);
-	};
-
-	const onKeyDown = (event: KeyboardEvent) => {
-		const value = (event.target as HTMLInputElement).value;
-		const { key } = event;
-
-		if (key === "Enter") {
-			void submitInput(value);
-			setInputKey((previousKey) =>  previousKey + 1);
-		} else if (key === "ArrowUp") {
-			event.preventDefault();
-			updateHistoryIndex(1);
-		} else if (key === "ArrowDown") {
-			event.preventDefault();
-			updateHistoryIndex(-1);
-		} else if (!stream && (event.ctrlKey || event.metaKey) && key === "c") {
-			setInputValue((value) => value + "^C");
-		}
-	};
-
-	const onChange = (event: KeyboardEvent) => {
-		const value = (event.target as HTMLInputElement).value;
-		return setInputValue(value);
-	};
-
-	const displayHistory = () => {
-		const visibleHistory = history.slice(-16);
-		let startIndex = 0;
-
-		visibleHistory.forEach((entry, index) => {
-			if (entry.clear)
-				startIndex = index + 1;
-		});
-
-		return visibleHistory.slice(startIndex).map(({ text }, index) => {
-			return <OutputLine text={text} key={index}/>;
-		});
-	};
-
-	const onMouseDown = (event: MouseEvent) => {
-		focus?.(event);
-
-		if (event.button === 2) {
-			event.preventDefault();
-
-			navigator.clipboard.readText?.().then((text) => {
-				setInputValue(inputValue + text);
-			}).catch((error) => {
-				console.error(error);
-			});
-		}
-	};
-
-	const onContextMenu = (event: Event) => {
-		event.preventDefault();
-	};
-
-	return (
-		<div
-			ref={ref} 
-			className={styles.Terminal}
-			onMouseDown={onMouseDown as unknown as MouseEventHandler}
-			onContextMenu={onContextMenu as unknown as MouseEventHandler}
-			onClick={(event) => {
-				if (window.getSelection()?.toString() === "") {
-					event.preventDefault();
-					(inputRef.current as HTMLInputElement | null)?.focus();
-				}
-			}}
-		>
-			{displayHistory()}
-			{!stream
-				? <InputLine
-					key={inputKey}
-					value={inputValue}
-					prefix={prefix}
-					onKeyDown={onKeyDown}
-					onChange={onChange}
-					inputRef={inputRef as unknown as MutableRefObject<HTMLInputElement>}
-				/>
-				: <OutputLine text={streamOutput ?? ""}/>
-			}
-		</div>
-	);
+    return (
+        <div
+            ref={ref}
+            className={styles.Terminal}
+            onMouseDown={onMouseDown as unknown as MouseEventHandler}
+            onContextMenu={onContextMenu as unknown as MouseEventHandler}
+            onClick={(event) => {
+                if (window.getSelection()?.toString() === "") {
+                    event.preventDefault();
+                    (inputRef.current as HTMLInputElement | null)?.focus();
+                }
+            }}
+        >
+            {displayHistory()}
+            {!stream
+                ? <InputLine
+                    key={inputKey}
+                    value={inputValue}
+                    prefix={prefix}
+                    onKeyDown={onKeyDown}
+                    onChange={onChange}
+                    inputRef={inputRef as unknown as MutableRefObject<HTMLInputElement>}
+                />
+                : <OutputLine text={streamOutput ?? ""} />
+            }
+        </div>
+    );
 }
