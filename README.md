@@ -63,7 +63,7 @@ This is an npm TypeScript web application. To set up and run the application loc
 
 ## License
 
-This project is licensed under Desktop4Kids License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
