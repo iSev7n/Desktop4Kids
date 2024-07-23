@@ -1,0 +1,21 @@
+
+.StatusIndicator {
+    margin-bottom: 1rem;
+}
+
+/* Style for the update button */
+.Button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.Button:hover {
+    background-color: var(--primary-color-dark);
+}

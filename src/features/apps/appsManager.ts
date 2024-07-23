@@ -30,6 +30,10 @@ export class AppsManager {
       source: "https://prozilla.dev/wordle",
       size: new Vector2(400, 650)
     }),
+    new App("Earth", "earth", WebView, {
+      source: "https://examples.webglearth.com/examples/helloworld.html",
+      size: new Vector2(1000, 800)
+    }),
     new App("Education Center", "education-center", WebView, {
       source: "https://desktop4kids.com/EducationCenter/",
       size: new Vector2(1000, 800)

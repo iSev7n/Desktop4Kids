@@ -20,72 +20,105 @@ export function AppearanceSettings() {
 	const settingsManager = useSettingsManager();
 	const [theme, setTheme] = useState(0);
 	const [wallpaper, setWallpaper] = useState<string | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
 	const desktopSettings = settingsManager?.getSettings(SettingsManager.VIRTUAL_PATHS.desktop);
 	const themeSettings = settingsManager?.getSettings(SettingsManager.VIRTUAL_PATHS.theme);
 	const { openWindowedModal } = useWindowedModal();
 
 	useEffect(() => {
-		void desktopSettings?.get("wallpaper", setWallpaper);
-		void themeSettings?.get("theme", (value: string) => { setTheme(parseInt(value)); });
+		const loadSettings = async () => {
+			try {
+				const wallpaperValue = await desktopSettings?.get("wallpaper");
+				const themeValue = await themeSettings?.get("theme");
+				setWallpaper(wallpaperValue ?? null);
+				setTheme(parseInt(themeValue ?? "0"));
+			} catch (e) {
+				setError("Failed to load settings");
+			} finally {
+				setLoading(false);
+			}
+		};
+		loadSettings();
 	}, [desktopSettings, themeSettings]);
 
 	const onWallpaperChange = (event: Event) => {
 		const value = (event.target as HTMLInputElement).value;
 		void desktopSettings?.set("wallpaper", value);
+		setWallpaper(value);
 	};
 
 	const onThemeChange = (event: Event) => {
 		const value = (event.target as HTMLInputElement).value;
 		void themeSettings?.set("theme", value);
+		setTheme(parseInt(value));
 	};
 
-	return (<>
-		<div className={styles.Option}>
-			<p className={styles.Label}>Theme</p>
-			<div className={styles.Input}>
-				<select className={styles.Dropdown} aria-label="theme" value={theme} onChange={onThemeChange as unknown as ChangeEventHandler}>
-					{Object.entries(THEMES).map(([key, value]) =>
-						<option key={key} value={key}>{value}</option>
-					)}
-				</select>
+	if (loading) {
+		return <p>Loading...</p>;
+	}
+
+	if (error) {
+		return <p className={utilStyles.TextError}>{error}</p>;
+	}
+
+	return (
+		<>
+			<div className={styles.Option}>
+				<p className={styles.Label}>Theme</p>
+				<div className={styles.Input}>
+					<select className={styles.Dropdown} aria-label="theme" value={theme} onChange={onThemeChange as unknown as ChangeEventHandler}>
+						{Object.entries(THEMES).map(([key, value]) => (
+							<option key={key} value={key}>
+								{value}
+							</option>
+						))}
+					</select>
+				</div>
 			</div>
-		</div>
-		<div className={styles.Option}>
-			<p className={styles.Label}>Wallpaper</p>
-			<Button
-				className={`${styles.Button} ${utilStyles.TextBold}`}
-				onClick={() => {
-					openWindowedModal({
-						size: DEFAULT_FILE_SELECTOR_SIZE,
-						Modal: (props: object) => <FileSelector
-							type={SELECTOR_MODE.SINGLE}
-							allowedFormats={IMAGE_FORMATS}
-							onFinish={(file) => {
-								if ((file as VirtualFile).source != null)
-									void desktopSettings?.set("wallpaper", (file as VirtualFile).source as string);
-							}}
-							{...props}
-						/>
-					});
-				}}
-			>
-				Browse
-			</Button>
-			<div className={`${styles.Input} ${styles.ImageSelectContainer}`}>
-				{(virtualRoot?.navigate(WALLPAPERS_PATH) as VirtualFolder)?.getFiles()?.map(({ id, source }) =>
-					<label className={styles.ImageSelect} key={id}>
-						<input
-							type="radio"
-							value={source ?? ""}
-							aria-label="Wallpaper image"
-							checked={source === wallpaper}
-							onChange={onWallpaperChange as unknown as ChangeEventHandler}
-							tabIndex={0}
-						/>
-						<img src={source ?? ""} alt={id} draggable="false"/>
-					</label>
-				)}
+			<div className={styles.Option}>
+				<p className={styles.Label}>Wallpaper</p>
+				<Button
+					className={`${styles.Button} ${utilStyles.TextBold}`}
+					onClick={() => {
+						openWindowedModal({
+							size: DEFAULT_FILE_SELECTOR_SIZE,
+							Modal: (props: object) => (
+								<FileSelector
+									type={SELECTOR_MODE.SINGLE}
+									allowedFormats={IMAGE_FORMATS}
+									onFinish={(file) => {
+										if ((file as VirtualFile).source != null) {
+											const source = (file as VirtualFile).source as string;
+											void desktopSettings?.set("wallpaper", source);
+											setWallpaper(source);
+										}
+									}}
+									{...props}
+								/>
+							),
+						});
+					}}
+				>
+					Browse
+				</Button>
+				<div className={`${styles.Input} ${styles.ImageSelectContainer}`}>
+					{(virtualRoot?.navigate(WALLPAPERS_PATH) as VirtualFolder)?.getFiles()?.map(({ id, source }) => (
+						<label className={styles.ImageSelect} key={id}>
+							<input
+								type="radio"
+								value={source ?? ""}
+								aria-label="Wallpaper image"
+								checked={source === wallpaper}
+								onChange={onWallpaperChange as unknown as ChangeEventHandler}
+								tabIndex={0}
+							/>
+							<img src={source ?? ""} alt={id} draggable="false" />
+						</label>
+					))}
+				</div>
 			</div>
-		</div>
-	</>);
+		</>
+	);
 }
