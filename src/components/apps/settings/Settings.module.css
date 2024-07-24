@@ -1,22 +1,23 @@
+/* Settings.module.css */
 .SettingsContainer {
 	width: 100%;
 	height: 100%;
 	position: sticky;
 	top: 0;
 	left: 0;
-}
-
-.Settings {
+  }
+  
+  .Settings {
 	--tabs-width: 10rem;
-
+  
 	flex: 1;
 	display: flex;
 	width: 100%;
 	height: 100%;
 	background-color: var(--background-color-2);
-}
-
-.Tabs {
+  }
+  
+  .Tabs {
 	display: flex;
 	gap: 0.25rem;
 	flex-direction: column;
@@ -29,9 +30,9 @@
 	background-color: var(--background-color-2);
 	resize: horizontal;
 	overflow: hidden;
-}
-
-.TabButton {
+  }
+  
+  .TabButton {
 	display: flex;
 	gap: 0.5rem;
 	align-items: center;
@@ -40,27 +41,30 @@
 	padding: 0.75rem;
 	border-radius: var(--border-radius-1);
 	font-size: 0.875rem;
-}
-
-.TabButton.ActiveTab {
+	transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s; /* Add transition for smooth hover effect */
+  }
+  
+  .TabButton.ActiveTab {
 	background-color: var(--background-color-0);
-}
-
-.TabButton:not(.ActiveTab):hover,
-.TabButton:not(.ActiveTab):focus-visible {
+  }
+  
+  .TabButton:not(.ActiveTab):hover,
+  .TabButton:not(.ActiveTab):focus-visible {
 	background-color: color-mix(in srgb, var(--background-color-0) 50%, transparent);
-}
-
-.TabButton > svg {
-	height: 1.35rem;
+	transform: scale(1.03); /* Reduce zoom effect on hover */
+	box-shadow: 0 0 5px rgba(255, 255, 255, 0.4); /* Reduce glow effect on hover */
+  }
+  
+  .TabButton > svg {
+	height: 1.5rem; /* Increase icon size */
 	aspect-ratio: 1;
-}
-
-.TabButton > p {
+  }
+  
+  .TabButton > p {
 	margin: 0;
-}
-
-.TabPanel {
+  }
+  
+  .TabPanel {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -69,13 +73,13 @@
 	padding: 0.5rem 1rem;
 	background-color: var(--background-color-3);
 	overflow: auto;
-}
-
-.TabPanel:not(.ActivePanel) {
+  }
+  
+  .TabPanel:not(.ActivePanel) {
 	display: none;
-}
-
-.Option {
+  }
+  
+  .Option {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -83,100 +87,107 @@
 	text-align: start;
 	width: 100%;
 	padding-bottom: 1rem;
-}
-
-.OptionList {
+  }
+  
+  .OptionList {
 	gap: 0.5rem;
-}
-
-.OptionList .Option {
+  }
+  
+  .OptionList .Option {
 	padding-bottom: 0;
-}
-
-.OptionHorizontal {
+  }
+  
+  .OptionHorizontal {
 	flex-direction: row;
 	justify-content: space-between;
-}
-
-.Option > .Label {
+	transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s; /* Add transition for smooth hover effect */
+  }
+  
+  .OptionHorizontal:hover {
+	transform: scale(1.02); /* Reduce zoom effect on hover */
+	/*box-shadow: 0 0 2px rgba(255, 255, 255, 0.4); /* Reduce glow effect on hover */
+  }
+  
+  .Option > .Label {
 	color: var(--foreground-color-0);
-}
-
-.Input {
+	font-size: 1.2rem; /* Increase font size for titles */
+  }
+  
+  .Input {
 	display: flex;
 	gap: 0.5rem;
 	flex-wrap: wrap;
-}
-
-.Input > label {
+  }
+  
+  .Input > label {
 	flex: 1;
 	display: flex;
-}
-
-.ImageSelectContainer {
+  }
+  
+  .ImageSelectContainer {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 	gap: 0.5rem;
-}
-
-.ImageSelect {
+  }
+  
+  .ImageSelect {
 	display: block;
 	width: 100%;
-}
-
-.ImageSelect > input {
+  }
+  
+  .ImageSelect > input {
 	position: absolute;
 	opacity: 0;
 	width: 0;
 	height: 0;
-}
-
-.ImageSelect > input:hover + img,
-.ImageSelect > input:focus-visible + img {
+  }
+  
+  .ImageSelect > input:hover + img,
+  .ImageSelect > input:focus-visible + img {
 	filter: brightness(110%);
-}
-
-.ImageSelect > input:checked + img {
+  }
+  
+  .ImageSelect > input:checked + img {
 	outline: 0.25em solid var(--foreground-color-0);
-}
-
-.ImageSelect > img {
+  }
+  
+  .ImageSelect > img {
 	width: 100%;
 	height: 100%;
 	border-radius: var(--border-radius-1);
 	transition: filter 100ms ease-in-out;
 	cursor: pointer;
-}
-
-.ButtonGroup {
+  }
+  
+  .ButtonGroup {
 	display: flex;
 	gap: 1rem;
 	flex-wrap: wrap;
 	margin: 0.75rem 0;
-}
-
-.ButtonGroup .Button {
+  }
+  
+  .ButtonGroup .Button {
 	margin-bottom: 0;
-}
-
-.Button {
+  }
+  
+  .Button {
 	--normal-color: var(--background-color-0) !important;
 	--hover-color: var(--background-color-1) !important;
-
+  
 	margin-bottom: 0.75rem !important;
 	padding: 0.5rem 1rem;
 	border-radius: var(--border-radius-1);
-}
-
-.ButtonDanger {
+  }
+  
+  .ButtonDanger {
 	--text-color: var(--black-1) !important;
 	--normal-color: var(--red-0) !important;
 	--hover-color: var(--red-1) !important;
-}
-
-.IconButton {
+  }
+  
+  .IconButton {
 	--color: var(--foreground-color-0);
-
+  
 	position: relative;
 	height: 1.25rem;
 	width: auto;
@@ -186,9 +197,9 @@
 	outline: none;
 	aspect-ratio: 1;
 	cursor: pointer;
-}
-
-.IconButton::after {
+  }
+  
+  .IconButton::after {
 	content: "";
 	position: absolute;
 	top: 0;
@@ -200,65 +211,65 @@
 	transform: scale(100%);
 	transform-origin: center;
 	transition: all 200ms ease-in-out;
-}
-
-.IconButton:hover::after, .IconButton:focus-visible::after {
+  }
+  
+  .IconButton:hover::after, .IconButton:focus-visible::after {
 	background-color: rgba(255, 255, 255, 10%);
 	transform: scale(150%);
-}
-
-.IconButton:disabled {
+  }
+  
+  .IconButton:disabled {
 	--color: var(--foreground-color-2);
-}
-
-.IconButton svg {
+  }
+  
+  .IconButton svg {
 	height: 100%;
-}
-
-.IconButton svg path {
+  }
+  
+  .IconButton svg path {
 	fill: var(--color);
 	transition: fill 100ms ease-in-out;
-}
-
-.ProgressBarContainer {
+  }
+  
+  .ProgressBarContainer {
 	width: 100%;
 	max-width: 35rem;
-}
-
-.ProgressBar {
+  }
+  
+  .ProgressBar {
 	width: 100% !important;
-}
-
-.ProgressBarLabels {
+  }
+  
+  .ProgressBarLabels {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
-}
-
-.Option > span.Label {
+  }
+  
+  .Option > span.Label {
 	display: flex;
 	gap: 0.5rem;
 	align-items: center;
-}
-
-.Icon {
+  }
+  
+  .Icon {
 	display: inline-block;
-	width: 2rem;
-	height: 2rem;
-}
-
-.Icon div {
+	width: 2.5rem; /* Increase icon size */
+	height: 2.5rem; /* Increase icon size */
+  }
+  
+  .Icon div {
 	width: inherit;
 	height: inherit;
-}
-
-.Icon div > svg {
+  }
+  
+  .Icon div > svg {
 	width: inherit;
 	height: inherit;
 	object-fit: contain;
-}
-
-.Dropdown {
+  }
+  
+  .Dropdown {
 	width: auto;
 	max-width: calc(60% - var(--gap));
 	padding: 0.5rem 1rem;
@@ -268,9 +279,9 @@
 	border-radius: var(--border-radius-1);
 	outline: none;
 	font-size: 0.875em;
-}
-
-.Dropdown > * {
+  }
+  
+  .Dropdown > * {
 	color: inherit;
 	background-color: inherit;
 	border: none;
@@ -278,4 +289,5 @@
 	outline: none;
 	font-family: inherit;
 	font-size: inherit;
-}
+  }
+  
