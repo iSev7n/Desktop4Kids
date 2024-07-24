@@ -11,6 +11,7 @@ import { APPS, APP_NAMES } from "../../config/apps.config";
 import { Browser } from "../../components/apps/browser/Browser";
 import { IMAGE_FORMATS } from "../../config/apps/mediaViewer.config";
 import { PhotoViewer } from "../../components/apps/file-explorer/photo-viewer/PhotoViewer";
+import { Games } from "../../components/apps/games/Games";
 
 // Define the AppCategory type
 type AppCategory = 'Utilities' | 'Games' | 'Apps';
@@ -40,6 +41,11 @@ export class AppsManager {
     createApp("Onslaught Arena", "sword", WebView, 'Games', {
       source: "http://arcade.lostdecadegames.com/onslaught-arena/",
       size: new Vector2(600, 600)
+    }),
+
+    //New Games Appv2
+    createApp("Games", "games", Games, 'Games', {
+      size: new Vector2(1000, 800)
     }),
 
     // Other Apps
