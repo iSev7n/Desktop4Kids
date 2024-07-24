@@ -41,6 +41,7 @@
     padding: 0.75rem;
     border-radius: var(--border-radius-1);
     font-size: 0.875rem;
+    transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s; /* Add transition for smooth hover effect */
   }
   
   .TabButton.ActiveTab {
@@ -50,6 +51,8 @@
   .TabButton:not(.ActiveTab):hover,
   .TabButton:not(.ActiveTab):focus-visible {
     background-color: color-mix(in srgb, var(--background-color-0) 50%, transparent);
+    transform: scale(1.05); /* Add zoom effect on hover */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Add glow effect on hover */
   }
   
   .TabButton > svg {
