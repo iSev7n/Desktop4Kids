@@ -21,6 +21,7 @@ export interface WindowOptions {
 }
 
 export class WindowsManager {
+  [x: string]: any;
 	windows: { [id: string]: WindowOptions };
 	updateWindows: Function;
 	startupComplete: boolean;

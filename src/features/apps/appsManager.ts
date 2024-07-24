@@ -38,10 +38,6 @@ export class AppsManager {
       source: "https://prozilla.dev/wordle",
       size: new Vector2(400, 650)
     }),
-    createApp("Onslaught Arena", "sword", WebView, 'Games', {
-      source: "http://arcade.lostdecadegames.com/onslaught-arena/",
-      size: new Vector2(600, 600)
-    }),
 
     //New Games Appv2
     createApp("Games", "games", Games, 'Games', {
