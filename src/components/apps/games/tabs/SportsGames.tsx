@@ -1,11 +1,12 @@
 // SportsGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const sportsGames = [
+  { name: "Sports Game1", image: "/assets/game-imgs/sports-game1.png", description: "Description for Sports Game1" },
+  { name: "Sports Game2", image: "/assets/game-imgs/sports-game2.png", description: "Description for Sports Game2" },
+  { name: "Sports Game3", image: "/assets/game-imgs/sports-game3.png", description: "Description for Sports Game3" }
+];
 
 export function SportsGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Sports Games</h2>
-      <p>Get active with sports games.</p>
-    </div>
-  );
+  return <CategoryGames games={sportsGames} />;
 }

@@ -1,12 +1,12 @@
 // ShooterGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const shooterGames = [
+  { name: "Game1", image: "/assets/game-imgs/shooter-game1.png", description: "Description for Shooter Game1" },
+  { name: "Game2", image: "/assets/game-imgs/shooter-game2.png", description: "Description for Shooter Game2" },
+  { name: "Game3", image: "/assets/game-imgs/shooter-game3.png", description: "Description for Shooter Game3" }
+];
 
 export function ShooterGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Shooter Games</h2>
-      <p>Experience fast-paced first-person shooter games.</p>
-    </div>
-  );
+  return <CategoryGames games={shooterGames} />;
 }
-

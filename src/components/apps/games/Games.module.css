@@ -76,7 +76,7 @@
     display: none;
   }
   
-  .GamesContent {
+  .GamesContent, .CategoryContent {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -94,7 +94,7 @@
     text-align: start;
     width: 100%;
     padding-bottom: 1rem;
-    background: linear-gradient(to bottom right, #0a51d4, #f51df5); /* Add gradient background */
+    /* background: linear-gradient(to bottom right, #1e3c72, #2a5298); /* Add gradient background */
     padding: 1rem;
     border-radius: var(--border-radius-1);
   }
@@ -106,8 +106,10 @@
   }
   
   .BannerImage {
-    width: 100%;
+    width: 85%;
     max-width: 100%;
+    height: 85%;
+    max-height: 100%;
     margin-bottom: 1rem;
     margin-top: 1rem; /* Add margin-top to create space above the banner image */
     border-radius: var(--border-radius-1);

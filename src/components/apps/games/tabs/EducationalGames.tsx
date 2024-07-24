@@ -1,11 +1,12 @@
 // EducationalGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const educationalGames = [
+  { name: "Educational Game1", image: "/assets/game-imgs/educational-game1.png", description: "Description for Educational Game1" },
+  { name: "Educational Game2", image: "/assets/game-imgs/educational-game2.png", description: "Description for Educational Game2" },
+  { name: "Educational Game3", image: "/assets/game-imgs/educational-game3.png", description: "Description for Educational Game3" }
+];
 
 export function EducationalGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Educational Games</h2>
-      <p>Learn and have fun with educational games.</p>
-    </div>
-  );
+  return <CategoryGames games={educationalGames} />;
 }

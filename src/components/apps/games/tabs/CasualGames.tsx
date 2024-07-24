@@ -1,11 +1,12 @@
 // CasualGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const casualGames = [
+  { name: "Casual Game1", image: "/assets/game-imgs/casual-game1.png", description: "Description for Casual Game1" },
+  { name: "Casual Game2", image: "/assets/game-imgs/casual-game2.png", description: "Description for Casual Game2" },
+  { name: "Casual Game3", image: "/assets/game-imgs/casual-game3.png", description: "Description for Casual Game3" }
+];
 
 export function CasualGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Casual Games</h2>
-      <p>Relax with casual games.</p>
-    </div>
-  );
+  return <CategoryGames games={casualGames} />;
 }

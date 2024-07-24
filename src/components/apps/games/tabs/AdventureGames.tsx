@@ -1,11 +1,12 @@
 // AdventureGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const adventureGames = [
+  { name: "Adventure Game1", image: "/assets/game-imgs/adventure-game1.png", description: "Description for Adventure Game1" },
+  { name: "Adventure Game2", image: "/assets/game-imgs/adventure-game2.png", description: "Description for Adventure Game2" },
+  { name: "Adventure Game3", image: "/assets/game-imgs/adventure-game3.png", description: "Description for Adventure Game3" }
+];
 
 export function AdventureGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Adventure Games</h2>
-      <p>Explore the world of adventure games.</p>
-    </div>
-  );
+  return <CategoryGames games={adventureGames} />;
 }

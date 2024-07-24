@@ -1,11 +1,12 @@
 // RacingGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const racingGames = [
+  { name: "Racing Game1", image: "/assets/game-imgs/racing-game1.png", description: "Description for Racing Game1" },
+  { name: "Racing Game2", image: "/assets/game-imgs/racing-game2.png", description: "Description for Racing Game2" },
+  { name: "Racing Game3", image: "/assets/game-imgs/racing-game3.png", description: "Description for Racing Game3" }
+];
 
 export function RacingGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Racing Games</h2>
-      <p>Feel the speed with racing games.</p>
-    </div>
-  );
+  return <CategoryGames games={racingGames} />;
 }

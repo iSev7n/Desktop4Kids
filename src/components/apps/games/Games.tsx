@@ -5,18 +5,18 @@ import { faHome, faPuzzlePiece, faDragon, faSkull, faHiking, faFistRaised, faGam
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { HomeGames } from "./tabs/HomeGames";
 import { RPGGames } from "./tabs/RPGGames";
-import { ShooterGames } from "./tabs/ShooterGames"; // Rename FPSGames to ShooterGames
+import { ShooterGames } from "./tabs/ShooterGames";
 import { PuzzleGames } from "./tabs/PuzzleGames";
-import { AdventureGames } from "./tabs/AdventureGames"; // New game category
-import { ActionGames } from "./tabs/ActionGames"; // New game category
-import { ArcadeGames } from "./tabs/ArcadeGames"; // New game category
-import { RacingGames } from "./tabs/RacingGames"; // New game category
-import { SportsGames } from "./tabs/SportsGames"; // New game category
-import { CasualGames } from "./tabs/CasualGames"; // New game category
-import { MMORPGGames } from "./tabs/MMORPGGames"; // New game category
-import { SandboxGames } from "./tabs/SandboxGames"; // New game category
-import { EducationalGames } from "./tabs/EducationalGames"; // New game category
-import { CardGames } from "./tabs/CardGames"; // New game category
+import { AdventureGames } from "./tabs/AdventureGames";
+import { ActionGames } from "./tabs/ActionGames";
+import { ArcadeGames } from "./tabs/ArcadeGames";
+import { RacingGames } from "./tabs/RacingGames";
+import { SportsGames } from "./tabs/SportsGames";
+import { CasualGames } from "./tabs/CasualGames";
+import { MMORPGGames } from "./tabs/MMORPGGames";
+import { SandboxGames } from "./tabs/SandboxGames";
+import { EducationalGames } from "./tabs/EducationalGames";
+import { CardGames } from "./tabs/CardGames";
 import { WindowProps } from "../../windows/WindowView";
 
 interface GamesProps extends WindowProps {

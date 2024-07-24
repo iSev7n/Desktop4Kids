@@ -1,11 +1,12 @@
 // CardGames.tsx
-import styles from "../Games.module.css";
+import { CategoryGames } from "./CategoryGames";
+
+const cardGames = [
+  { name: "Card Game1", image: "/assets/game-imgs/card-game1.png", description: "Description for Card Game1" },
+  { name: "Card Game2", image: "/assets/game-imgs/card-game2.png", description: "Description for Card Game2" },
+  { name: "Card Game3", image: "/assets/game-imgs/card-game3.png", description: "Description for Card Game3" }
+];
 
 export function CardGames() {
-  return (
-    <div className={styles.GamesContent}>
-      <h2>Card Games</h2>
-      <p>Enjoy a variety of card games.</p>
-    </div>
-  );
+  return <CategoryGames games={cardGames} />;
 }
