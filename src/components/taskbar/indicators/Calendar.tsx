@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useReducer, useState, useCallback } from "react";
 import styles from "./Calendar.module.css";
 import { OutsideClickListener } from "../../../hooks/_utils/outsideClick";
 import { UtilMenu } from "../menus/UtilMenu";
@@ -8,11 +8,43 @@ interface CalendarProps {
   showUtilMenu: Function;
 }
 
+interface CalendarState {
+  currentMonth: number;
+  currentYear: number;
+}
+
+type CalendarAction = 
+  | { type: 'PREVIOUS_MONTH' }
+  | { type: 'NEXT_MONTH' };
+
+function calendarReducer(state: CalendarState, action: CalendarAction): CalendarState {
+  switch (action.type) {
+    case 'PREVIOUS_MONTH': {
+      const newMonth = state.currentMonth === 0 ? 11 : state.currentMonth - 1;
+      const newYear = state.currentMonth === 0 ? state.currentYear - 1 : state.currentYear;
+      console.log(`Month changed to ${newMonth}`);
+      console.log(`Year changed to ${newYear}`);
+      return { currentMonth: newMonth, currentYear: newYear };
+    }
+    case 'NEXT_MONTH': {
+      const newMonth = state.currentMonth === 11 ? 0 : state.currentMonth + 1;
+      const newYear = state.currentMonth === 11 ? state.currentYear + 1 : state.currentYear;
+      console.log(`Month changed to ${newMonth}`);
+      console.log(`Year changed to ${newYear}`);
+      return { currentMonth: newMonth, currentYear: newYear };
+    }
+    default:
+      return state;
+  }
+}
+
 export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
   const [date, setDate] = useState(new Date());
   const [showMenu, setShowMenu] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [state, dispatch] = useReducer(calendarReducer, {
+    currentMonth: new Date().getMonth(),
+    currentYear: new Date().getFullYear(),
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,29 +74,17 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
   }, []);
 
   const handlePreviousMonth = () => {
-    setCurrentMonth((prevMonth) => {
-      const newMonth = prevMonth === 0 ? 11 : prevMonth - 1;
-      if (newMonth === 11) {
-        setCurrentYear((prevYear) => prevYear - 1);
-      }
-      return newMonth;
-    });
+    dispatch({ type: 'PREVIOUS_MONTH' });
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth((prevMonth) => {
-      const newMonth = prevMonth === 11 ? 0 : prevMonth + 1;
-      if (newMonth === 0) {
-        setCurrentYear((prevYear) => prevYear + 1);
-      }
-      return newMonth;
-    });
+    dispatch({ type: 'NEXT_MONTH' });
   };
 
   const renderCalendar = useCallback(() => {
     const days = [];
-    const daysInCurrentMonth = daysInMonth(currentMonth, currentYear);
-    const firstDay = firstDayOfMonth(currentMonth, currentYear);
+    const daysInCurrentMonth = daysInMonth(state.currentMonth, state.currentYear);
+    const firstDay = firstDayOfMonth(state.currentMonth, state.currentYear);
 
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className={styles.CalendarCell}></div>);
@@ -73,8 +93,8 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
     for (let i = 1; i <= daysInCurrentMonth; i++) {
       const isToday =
         i === date.getDate() &&
-        currentMonth === date.getMonth() &&
-        currentYear === date.getFullYear();
+        state.currentMonth === date.getMonth() &&
+        state.currentYear === date.getFullYear();
       days.push(
         <div
           key={i}
@@ -86,7 +106,7 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
     }
 
     return days;
-  }, [currentMonth, currentYear, date, daysInMonth, firstDayOfMonth]);
+  }, [state.currentMonth, state.currentYear, date, daysInMonth, firstDayOfMonth]);
 
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -101,7 +121,7 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
         {date.toLocaleString("en-GB", {
           hour: "numeric",
           minute: "numeric",
-          hour12: false,
+          hour12: true,  // Use 12-hour format
         })}
         <br />
         {date.toLocaleDateString("en-GB", {
@@ -116,7 +136,7 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
             hour: "numeric",
             minute: "numeric",
             second: "numeric",
-            hour12: false,
+            hour12: true,  // Use 12-hour format
           })}
         </p>
         <p className={styles.Date}>
@@ -129,14 +149,14 @@ export function Calendar({ hideUtilMenus, showUtilMenu }: CalendarProps) {
         </p>
         <div className={styles.Calendar}>
           <div className={styles.CalendarHeader}>
-            <button className={styles.prevButton} onClick={handlePreviousMonth}>&lt;</button>
+            <button className={styles.prevButton} onClick={handlePreviousMonth}>&larr;</button>
             <span className={styles.monthYear}>
-              {new Date(currentYear, currentMonth).toLocaleString("en-GB", {
+              {new Date(state.currentYear, state.currentMonth).toLocaleString("en-GB", {
                 month: "long",
                 year: "numeric",
               })}
             </span>
-            <button className={styles.nextButton} onClick={handleNextMonth}>&gt;</button>
+            <button className={styles.nextButton} onClick={handleNextMonth}>&rarr;</button>
           </div>
           <div className={styles.Weekdays}>
             {weekdays.map(day => (

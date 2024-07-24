@@ -12,6 +12,7 @@ export interface VirtualFolderLinkJson extends VirtualFolderJson {
  */
 export class VirtualFolderLink extends VirtualFolder {
 	linkedPath?: string;
+  static setLinkedPath: any;
 
 	constructor(name: string, linkedFolder?: VirtualFolder) {
 		super(name);
