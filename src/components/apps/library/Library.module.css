@@ -1,0 +1,164 @@
+/* Library.module.css */
+.LibraryContainer {
+    width: 100%;
+    height: 100%;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+
+.Library {
+    --tabs-width: 10rem;
+
+    flex: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color-2);
+}
+
+.Tabs {
+    display: flex;
+    gap: 0.25rem;
+    flex-direction: column;
+    min-width: calc(var(--tabs-width) / 2);
+    width: var(--tabs-width);
+    height: 100%;
+    max-width: 50%;
+    padding: 0.5rem;
+    margin: 0;
+    background-color: var(--background-color-2);
+    resize: horizontal;
+    overflow: hidden;
+}
+
+.TabButton {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    min-width: fit-content;
+    padding: 0.75rem;
+    border-radius: var(--border-radius-1);
+    font-size: 0.875rem;
+    transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+.TabButton.ActiveTab {
+    background-color: var(--background-color-0);
+}
+
+.TabButton:not(.ActiveTab):hover,
+.TabButton:not(.ActiveTab):focus-visible {
+    background-color: color-mix(in srgb, var(--background-color-0) 50%, transparent);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.TabButton > svg {
+    height: 1.35rem;
+    aspect-ratio: 1;
+}
+
+.TabButton > p {
+    margin: 0;
+}
+
+.TabPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    height: 100%;
+    padding: 0.5rem 1rem;
+    background-color: var(--background-color-3);
+    overflow: auto;
+}
+
+.TabPanel:not(.ActivePanel) {
+    display: none;
+}
+
+.LibraryContent, .CategoryContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: start;
+    width: 100%;
+    padding-bottom: 1rem;
+}
+
+.HomeContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: start;
+    width: 100%;
+    padding-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--border-radius-1);
+}
+
+.WelcomeText {
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-top: 1rem;
+}
+
+.BannerImage {
+    width: 85%;
+    max-width: 100%;
+    height: 85%;
+    max-height: 100%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    border-radius: var(--border-radius-1);
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+
+.BookList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.BookItem {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    padding: 1rem;
+    background-color: var(--background-color-1);
+    border-radius: var(--border-radius-1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.BookItem:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+.BookItem img {
+    max-width: 100%;
+    border-radius: var(--border-radius-1);
+}
+
+.BookDetails {
+    margin-top: 1rem;
+}
+
+.BookIcon {
+    font-size: 2rem;
+    color: var(--foreground-color-0);
+}
+
+.BookItem h3 {
+    margin-top: 0.5rem;
+}
+
+.BookItem p {
+    margin-top: 0.5rem;
+}

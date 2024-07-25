@@ -1,0 +1,50 @@
+/* SharedLibraryStyles.module.css */
+.CategoryContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: start;
+    width: 100%;
+    padding-bottom: 1rem;
+}
+
+.BookList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.BookItem {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+    padding: 1rem;
+    background-color: var(--background-color-1);
+    border-radius: var(--border-radius-1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.BookItem:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+.BookImage {
+    max-width: 100%;
+    border-radius: var(--border-radius-1);
+}
+
+.BookDetails {
+    margin-top: 1rem;
+}
+
+.BookItem h3 {
+    margin-top: 0.5rem;
+}
+
+.BookItem p {
+    margin-top: 0.5rem;
+}

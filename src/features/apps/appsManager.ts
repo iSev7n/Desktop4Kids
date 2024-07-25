@@ -12,6 +12,7 @@ import { Browser } from "../../components/apps/browser/Browser";
 import { IMAGE_FORMATS } from "../../config/apps/mediaViewer.config";
 import { PhotoViewer } from "../../components/apps/file-explorer/photo-viewer/PhotoViewer";
 import { Games } from "../../components/apps/games/Games";
+import { Library } from "../../components/apps/library/Library";
 
 // Define the AppCategory type
 type AppCategory = 'Utilities' | 'Games' | 'Apps';
@@ -37,6 +38,11 @@ export class AppsManager {
     createApp("Wordle", "wordle", WebView, 'Games', {
       source: "https://prozilla.dev/wordle",
       size: new Vector2(400, 650)
+    }),
+
+    // Library App
+    createApp("Library", "library", Library, 'Apps', {
+      size: new Vector2(1000, 800)
     }),
 
     //New Games Appv2
