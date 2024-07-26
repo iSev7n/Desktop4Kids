@@ -82,7 +82,7 @@ const PaintApp: React.FC<PaintAppProps> = ({ saveFile, loadFile }) => {
         <button onClick={handleSaveDrawing}>Save</button>
         <button onClick={handleLoadDrawing}>Load</button>
         <button onClick={handleZoomIn}>+</button>
-        <button onClick={handleZoomOut}>-</button>
+        <button onClick={handleZoomOut}>&#x2212;</button>
       </div>
     </div>
   );
