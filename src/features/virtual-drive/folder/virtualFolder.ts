@@ -17,6 +17,9 @@ export interface VirtualFolderJson extends VirtualBaseJson {
  * A virtual folder that can contains files and sub-folders
  */
 export class VirtualFolder extends VirtualBase {
+    setSource(data: string) {
+      throw new Error("Method not implemented.");
+    }
     subFolders: (VirtualFolder | VirtualFolderLink)[];
     files: (VirtualFile | VirtualFileLink)[];
     type: number | undefined;

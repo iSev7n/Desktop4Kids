@@ -33,320 +33,320 @@ import { DropdownAction } from "../../actions/actions/DropdownAction";
 import CreateMenu from "../../taskbar/menus/CreateMenu";
 
 interface FileExplorerProps extends WindowProps {
-    path?: string;
-    selectorMode?: number;
-    Footer: FC;
-    onSelectionChange: (params: OnSelectionChangeParams) => void;
-    onSelectionFinish: Function;
+  path?: string;
+  selectorMode?: number;
+  Footer: FC;
+  onSelectionChange: (params: OnSelectionChangeParams) => void;
+  onSelectionFinish: Function;
 }
 
 export function FileExplorer({ path: startPath, selectorMode, Footer, onSelectionChange, onSelectionFinish }: FileExplorerProps) {
-    const isSelector = (Footer != null && selectorMode != null && selectorMode !== SELECTOR_MODE.NONE);
+  const isSelector = (Footer != null && selectorMode != null && selectorMode !== SELECTOR_MODE.NONE);
 
-    const virtualRoot = useVirtualRoot();
-    const [currentDirectory, setCurrentDirectory] = useState<VirtualFolder>(virtualRoot?.navigate(startPath ?? "~") as VirtualFolder);
-    const [path, setPath] = useState<string>(currentDirectory?.path ?? "");
-    const [forceRenderKey, setForceRenderKey] = useState<number>(0);
-    const windowsManager = useWindowsManager();
-    const [showHidden] = useState(true);
-    const { history, stateIndex, pushState, undo, redo, undoAvailable, redoAvailable } = useHistory<string>(currentDirectory.path);
-    const { alert } = useAlert();
-    const [selectedFileType, setSelectedFileType] = useState<string>("");
+  const virtualRoot = useVirtualRoot();
+  const [currentDirectory, setCurrentDirectory] = useState<VirtualFolder>(virtualRoot?.navigate(startPath ?? "~") as VirtualFolder);
+  const [path, setPath] = useState<string>(currentDirectory?.path ?? "");
+  const [forceRenderKey, setForceRenderKey] = useState<number>(0);
+  const windowsManager = useWindowsManager();
+  const [showHidden] = useState(true);
+  const { history, stateIndex, pushState, undo, redo, undoAvailable, redoAvailable } = useHistory<string>(currentDirectory.path);
+  const { alert } = useAlert();
+  const [selectedFileType, setSelectedFileType] = useState<string>("");
 
-    const forceUpdate = () => setForceRenderKey(prev => prev + 1);
+  const forceUpdate = () => setForceRenderKey(prev => prev + 1);
 
-    const renameFile = (file: VirtualFile) => {
-        file.isRename = true;
-        file.confirmChanges();
-        forceUpdate();  // Force re-render
-    };
+  const renameFile = (file: VirtualFile) => {
+    file.isRename = true;
+    file.confirmChanges();
+    forceUpdate();  // Force re-render
+  };
 
-    const renameFolder = (file: VirtualFolder) => {
-        file.isRename = true;
-        file.confirmChanges();
-        forceUpdate();  // Force re-render
-    };
+  const renameFolder = (file: VirtualFolder) => {
+    file.isRename = true;
+    file.confirmChanges();
+    forceUpdate();  // Force re-render
+  };
 
-    const deleteFile = (file: VirtualFile) => {
-        currentDirectory.remove(file);
-        currentDirectory.confirmChanges();
-        forceUpdate();  // Force re-render
-    };
+  const deleteFile = (file: VirtualFile) => {
+    currentDirectory.remove(file);
+    currentDirectory.confirmChanges();
+    forceUpdate();  // Force re-render
+  };
 
-    const deleteFolder = (folder: VirtualFolder) => {
-        currentDirectory.remove(folder);
-        currentDirectory.confirmChanges();
-        forceUpdate();  // Force re-render
-    };
+  const deleteFolder = (folder: VirtualFolder) => {
+    currentDirectory.remove(folder);
+    currentDirectory.confirmChanges();
+    forceUpdate();  // Force re-render
+  };
 
-    const { openWindowedModal } = useWindowedModal();
-    const { onContextMenu: onContextMenuFile } = useContextMenu({
-        Actions: (props) =>
-            <Actions {...props}>
-                <ClickAction label={!isSelector ? "Open" : "Select"} onTrigger={(event, file) => {
-                    if (isSelector) {
-                        onSelectionChange?.({ files: [(file as VirtualFile).id], directory: currentDirectory });
-                        onSelectionFinish?.();
-                        return;
-                    }
-                    if (windowsManager != null) (file as VirtualFile).open(windowsManager);
-                }} />
-                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, file) => {
-                    renameFile(file as VirtualFile);
-                }} />
-                <ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
-                    deleteFile(file as VirtualFile);
-                }} />
-                <ClickAction label="Properties" icon={faCircleInfo} onTrigger={(event, file) => {
-                    openWindowedModal({
-                        title: `${(file as VirtualFile).id} ${TITLE_SEPARATOR} Properties`,
-                        iconUrl: (file as VirtualFile).getIconUrl(),
-                        size: new Vector2(400, 500),
-                        Modal: (props: object) => <FileProperties file={file as VirtualFile} {...props} />
-                    });
-                }} />
-            </Actions>
-    });
-    const { onContextMenu: onContextMenuFolder } = useContextMenu({
-        Actions: (props) =>
-            <Actions {...props}>
-                <ClickAction label="Open" onTrigger={(event, folder) => {
-                    changeDirectory((folder as VirtualFolderLink).linkedPath ?? (folder as VirtualFolder).name);
-                }} />
-                <ClickAction label={`Open in ${APP_NAMES.TERMINAL}`} icon={APP_ICONS.TERMINAL} onTrigger={(event, folder) => {
-                    windowsManager?.open(APPS.TERMINAL, { startPath: (folder as VirtualFolder).path });
-                }} />
-                <Divider />
-                <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, folder) => {
-                    renameFolder(folder as VirtualFolder);
-                }} />
-                <ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
-                    deleteFolder(folder as VirtualFolder);
-                }} />
-            </Actions>
-    });
-
-    const [newModalOpen, setNewModalOpen] = useState(false);
-    const [newItemType, setNewItemType] = useState<"File" | "Folder" | null>(null);
-    const [newItemName, setNewItemName] = useState("");
-
-    const onNew = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        setNewModalOpen(true);
-    };
-
-    const handleClose = () => {
-        setNewModalOpen(false);
-    };
-
-    const handleCreateFile = () => {
-        if (currentDirectory) {
-            currentDirectory.createFile("New File", "txt");
-            currentDirectory.confirmChanges();
-            forceUpdate();  // Force re-render
-        }
-    };
-
-    const handleCreateFolder = () => {
-        if (currentDirectory) {
-            currentDirectory.createFolder("New Folder");
-            currentDirectory.confirmChanges();
-            forceUpdate();  // Force re-render
-        }
-    };
-
-    const changeDirectory = useCallback((path: string, absolute = false) => {
-        if (path == null)
+  const { openWindowedModal } = useWindowedModal();
+  const { onContextMenu: onContextMenuFile } = useContextMenu({
+    Actions: (props) =>
+      <Actions {...props}>
+        <ClickAction label={!isSelector ? "Open" : "Select"} onTrigger={(event, file) => {
+          if (isSelector) {
+            onSelectionChange?.({ files: [(file as VirtualFile).id], directory: currentDirectory });
+            onSelectionFinish?.();
             return;
+          }
+          if (windowsManager != null) (file as VirtualFile).open(windowsManager);
+        }} />
+        <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, file) => {
+          renameFile(file as VirtualFile);
+        }} />
+        <ClickAction label="Delete" icon={faTrash} onTrigger={(event, file) => {
+          deleteFile(file as VirtualFile);
+        }} />
+        <ClickAction label="Properties" icon={faCircleInfo} onTrigger={(event, file) => {
+          openWindowedModal({
+            title: `${(file as VirtualFile).id} ${TITLE_SEPARATOR} Properties`,
+            iconUrl: (file as VirtualFile).getIconUrl(),
+            size: new Vector2(400, 500),
+            Modal: (props: object) => <FileProperties file={file as VirtualFile} {...props} />
+          });
+        }} />
+      </Actions>
+  });
+  const { onContextMenu: onContextMenuFolder } = useContextMenu({
+    Actions: (props) =>
+      <Actions {...props}>
+        <ClickAction label="Open" onTrigger={(event, folder) => {
+          changeDirectory((folder as VirtualFolderLink).linkedPath ?? (folder as VirtualFolder).name);
+        }} />
+        <ClickAction label={`Open in ${APP_NAMES.TERMINAL}`} icon={APP_ICONS.TERMINAL} onTrigger={(event, folder) => {
+          windowsManager?.open(APPS.TERMINAL, { startPath: (folder as VirtualFolder).path });
+        }} />
+        <Divider />
+        <ClickAction label="Rename" icon={faFolderBlank} onTrigger={(event, folder) => {
+          renameFolder(folder as VirtualFolder);
+        }} />
+        <ClickAction label="Delete" icon={faTrash} onTrigger={(event, folder) => {
+          deleteFolder(folder as VirtualFolder);
+        }} />
+      </Actions>
+  });
 
-        if (currentDirectory == null)
-            absolute = true;
+  const [newModalOpen, setNewModalOpen] = useState(false);
+  const [newItemType, setNewItemType] = useState<"File" | "Folder" | null>(null);
+  const [newItemName, setNewItemName] = useState("");
 
-        const directory = absolute ? virtualRoot?.navigate(path) : currentDirectory.navigate(path);
+  const onNew = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setNewModalOpen(true);
+  };
 
-        if (directory != null) {
-            setCurrentDirectory(directory as VirtualFolder);
-            setPath(directory.root ? "/" : directory.path);
-            pushState(directory.path);
-        }
-    }, [currentDirectory, pushState, virtualRoot]);
+  const handleClose = () => {
+    setNewModalOpen(false);
+  };
 
-    useEffect(() => {
-        if (history.length === 0)
-            return;
+  const handleCreateFile = () => {
+    if (currentDirectory) {
+      currentDirectory.createFile("New File", "txt");
+      currentDirectory.confirmChanges();
+      forceUpdate();  // Force re-render
+    }
+  };
 
-        const path = history[stateIndex];
-        const directory = virtualRoot?.navigate(path);
-        if (directory != null) {
-            setCurrentDirectory(directory as VirtualFolder);
-            setPath(directory.root ? "/" : directory.path);
-        }
-    }, [history, stateIndex, virtualRoot]);
+  const handleCreateFolder = () => {
+    if (currentDirectory) {
+      currentDirectory.createFolder("New Folder");
+      currentDirectory.confirmChanges();
+      forceUpdate();  // Force re-render
+    }
+  };
 
-    useEffect(() => {
-        type Error = { message: string };
-        const onError = (error: unknown) => {
-            alert({
-                title: (error as Error).message,
-                text: "You have exceeded the virtual drive capacity. Files and folders will not be saved until more storage is freed.",
-                iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
-                size: new Vector2(300, 200),
-                single: true,
-            });
-        };
+  const changeDirectory = useCallback((path: string, absolute = false) => {
+    if (path == null)
+      return;
 
-        virtualRoot?.on(VirtualRoot.EVENT_NAMES.ERROR, onError);
+    if (currentDirectory == null)
+      absolute = true;
 
-        return () => {
-            virtualRoot?.off(VirtualRoot.EVENT_NAMES.ERROR, onError);
-        };
-    }, []);
+    const directory = absolute ? virtualRoot?.navigate(path) : currentDirectory.navigate(path);
 
-    const onPathChange = (event: Event) => {
-        setPath((event.target as HTMLInputElement).value);
+    if (directory != null) {
+      setCurrentDirectory(directory as VirtualFolder);
+      setPath(directory.root ? "/" : directory.path);
+      pushState(directory.path);
+    }
+  }, [currentDirectory, pushState, virtualRoot]);
+
+  useEffect(() => {
+    if (history.length === 0)
+      return;
+
+    const path = history[stateIndex];
+    const directory = virtualRoot?.navigate(path);
+    if (directory != null) {
+      setCurrentDirectory(directory as VirtualFolder);
+      setPath(directory.root ? "/" : directory.path);
+    }
+  }, [history, stateIndex, virtualRoot]);
+
+  useEffect(() => {
+    type Error = { message: string };
+    const onError = (error: unknown) => {
+      alert({
+        title: (error as Error).message,
+        text: "You have exceeded the virtual drive capacity. Files and folders will not be saved until more storage is freed.",
+        iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
+        size: new Vector2(300, 200),
+        single: true,
+      });
     };
 
-    const onKeyDown = (event: KeyboardEvent) => {
-        let value = (event.target as HTMLInputElement).value;
+    virtualRoot?.on(VirtualRoot.EVENT_NAMES.ERROR, onError);
 
-        if (event.key === "Enter") {
-            if (value === "")
-                value = "~";
-
-            const directory = virtualRoot?.navigate(value);
-
-            if (directory == null) {
-                openWindowedModal({
-                    title: "Error",
-                    iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
-                    size: new Vector2(300, 150),
-                    Modal: (props: {}) =>
-                        <DialogBox {...props}>
-                            <p>Invalid path: "{value}"</p>
-                            <button data-type={DIALOG_CONTENT_TYPES.closeButton}>Ok</button>
-                        </DialogBox>
-                });
-                return;
-            }
-
-            setCurrentDirectory(directory as VirtualFolder);
-            setPath(directory.root ? "/" : directory.path);
-        }
+    return () => {
+      virtualRoot?.off(VirtualRoot.EVENT_NAMES.ERROR, onError);
     };
+  }, []);
 
-    const itemCount = currentDirectory.getItemCount(showHidden);
+  const onPathChange = (event: Event) => {
+    setPath((event.target as HTMLInputElement).value);
+  };
 
-    const { onContextMenu, ShortcutsListener } = useContextMenu({
-        Actions: (props) =>
-            <Actions {...props}>
+  const onKeyDown = (event: KeyboardEvent) => {
+    let value = (event.target as HTMLInputElement).value;
 
-                <DropdownAction label="New" icon={faFolderTree}>
-                    <ClickAction label="New File" icon={faFile} onTrigger={handleCreateFile} />
-                    <Divider />
-                    <ClickAction label="New Folder" icon={faFolder} onTrigger={handleCreateFolder} />
-                </DropdownAction>
-            </Actions>
-    });
+    if (event.key === "Enter") {
+      if (value === "")
+        value = "~";
 
-    return (
-        <>
-            <ShortcutsListener />
-            <div
-                key={forceRenderKey}  // Use the forceRenderKey to trigger re-renders
-                onContextMenu={onContextMenu as unknown as MouseEventHandler}
-                className={!isSelector ? styles.FileExplorer : `${styles.FileExplorer} ${styles.Selector}`}
-            >
-                <div className={styles.Header}>
-                    <button
-                        title="Back"
-                        tabIndex={0}
-                        className={styles.IconButton}
-                        onClick={() => { undo(); }}
-                        disabled={!undoAvailable}
-                    >
-                        <FontAwesomeIcon icon={faCaretLeft} />
-                    </button>
-                    <button
-                        title="Forward"
-                        tabIndex={0}
-                        className={styles.IconButton}
-                        onClick={() => { redo(); }}
-                        disabled={!redoAvailable}
-                    >
-                        <FontAwesomeIcon icon={faCaretRight} />
-                    </button>
-                    <button
-                        title="Up"
-                        tabIndex={0}
-                        className={styles.IconButton}
-                        onClick={() => { changeDirectory(".."); }}
-                        disabled={currentDirectory.isRoot != null && currentDirectory.isRoot}
-                    >
-                        <FontAwesomeIcon icon={faArrowUp} />
-                    </button>
-                    <input
-                        value={path}
-                        type="text"
-                        aria-label="Path"
-                        className={styles.PathInput}
-                        tabIndex={0}
-                        onChange={onPathChange as unknown as ChangeEventHandler}
-                        onKeyDown={onKeyDown as unknown as KeyboardEventHandler}
-                        placeholder="Enter a path..."
-                    />
-                    <ImportButton directory={currentDirectory} />
-                    <button title="Search" tabIndex={0} className={styles.IconButton}>
-                        <FontAwesomeIcon icon={faSearch} />
-                    </button>
-                    <button title="Settings" tabIndex={0} className={styles.IconButton}>
-                        <FontAwesomeIcon icon={faCog} />
-                    </button>
-                </div>
-                <div className={styles.Body}>
-                    <div className={styles.Sidebar}>
-                        <QuickAccessButton name={"Home"} onClick={() => { changeDirectory("~"); }} icon={faHouse} />
-                        <QuickAccessButton name={"Desktop"} onClick={() => { changeDirectory("~/Desktop"); }} icon={faDesktop} />
-                        <QuickAccessButton name={"Images"} onClick={() => { changeDirectory("~/Pictures"); }} icon={faImage} />
-                        <QuickAccessButton name={"Videos"} onClick={() => { changeDirectory("~/Videos"); }} icon={faFileVideo} />
-                        <QuickAccessButton name={"Documents"} onClick={() => { changeDirectory("~/Documents"); }} icon={faFileLines} />
-                    </div>
-                    <DirectoryList
-                        directory={currentDirectory}
-                        id="main"
-                        className={styles.Main}
-                        showHidden={showHidden}
-                        onOpenFile={(event, file) => {
-                            event.preventDefault();
-                            if (isSelector)
-                                return void onSelectionFinish?.();
-                            const options: Record<string, string> = {};
-                            if (file.extension === "md" || (file.extension != null && CODE_FORMATS.includes(file.extension)))
-                                options.mode = "view";
-                            windowsManager?.openFile(file, options);
-                        }}
-                        onOpenFolder={(event, folder) => {
-                            changeDirectory((folder as VirtualFolderLink).linkedPath ?? folder.name);
-                        }}
-                        onContextMenuFile={onContextMenuFile as unknown as FileEventHandler}
-                        onContextMenuFolder={onContextMenuFolder as unknown as FolderEventHandler}
-                        allowMultiSelect={selectorMode !== SELECTOR_MODE.SINGLE}
-                        onSelectionChange={onSelectionChange}
-                    />
-                </div>
-                {!isSelector
-                    ? <span className={styles.Footer}>
-                        <p className={utilStyles.TextLight}>
-                            {itemCount === 1
-                                ? itemCount + " item"
-                                : itemCount + " items"
-                            }
-                        </p>
-                    </span>
-                    : <div className={styles.Footer}>
-                        <Footer />
-                    </div>
-                }
-            </div>
-        </>
-    );
+      const directory = virtualRoot?.navigate(value);
+
+      if (directory == null) {
+        openWindowedModal({
+          title: "Error",
+          iconUrl: AppsManager.getAppIconUrl(APPS.FILE_EXPLORER),
+          size: new Vector2(300, 150),
+          Modal: (props: {}) =>
+            <DialogBox {...props}>
+              <p>Invalid path: "{value}"</p>
+              <button data-type={DIALOG_CONTENT_TYPES.closeButton}>Ok</button>
+            </DialogBox>
+        });
+        return;
+      }
+
+      setCurrentDirectory(directory as VirtualFolder);
+      setPath(directory.root ? "/" : directory.path);
+    }
+  };
+
+  const itemCount = currentDirectory.getItemCount(showHidden);
+
+  const { onContextMenu, ShortcutsListener } = useContextMenu({
+    Actions: (props) =>
+      <Actions {...props}>
+
+        <DropdownAction label="New" icon={faFolderTree}>
+          <ClickAction label="New File" icon={faFile} onTrigger={handleCreateFile} />
+          <Divider />
+          <ClickAction label="New Folder" icon={faFolder} onTrigger={handleCreateFolder} />
+        </DropdownAction>
+      </Actions>
+  });
+
+  return (
+    <>
+      <ShortcutsListener />
+      <div
+        key={forceRenderKey}  // Use the forceRenderKey to trigger re-renders
+        onContextMenu={onContextMenu as unknown as MouseEventHandler}
+        className={!isSelector ? styles.FileExplorer : `${styles.FileExplorer} ${styles.Selector}`}
+      >
+        <div className={styles.Header}>
+          <button
+            title="Back"
+            tabIndex={0}
+            className={styles.IconButton}
+            onClick={() => { undo(); }}
+            disabled={!undoAvailable}
+          >
+            <FontAwesomeIcon icon={faCaretLeft} />
+          </button>
+          <button
+            title="Forward"
+            tabIndex={0}
+            className={styles.IconButton}
+            onClick={() => { redo(); }}
+            disabled={!redoAvailable}
+          >
+            <FontAwesomeIcon icon={faCaretRight} />
+          </button>
+          <button
+            title="Up"
+            tabIndex={0}
+            className={styles.IconButton}
+            onClick={() => { changeDirectory(".."); }}
+            disabled={currentDirectory.isRoot != null && currentDirectory.isRoot}
+          >
+            <FontAwesomeIcon icon={faArrowUp} />
+          </button>
+          <input
+            value={path}
+            type="text"
+            aria-label="Path"
+            className={styles.PathInput}
+            tabIndex={0}
+            onChange={onPathChange as unknown as ChangeEventHandler}
+            onKeyDown={onKeyDown as unknown as KeyboardEventHandler}
+            placeholder="Enter a path..."
+          />
+          <ImportButton directory={currentDirectory} />
+          <button title="Search" tabIndex={0} className={styles.IconButton}>
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+          <button title="Settings" tabIndex={0} className={styles.IconButton}>
+            <FontAwesomeIcon icon={faCog} />
+          </button>
+        </div>
+        <div className={styles.Body}>
+          <div className={styles.Sidebar}>
+            <QuickAccessButton name={"Home"} onClick={() => { changeDirectory("~"); }} icon={faHouse} />
+            <QuickAccessButton name={"Desktop"} onClick={() => { changeDirectory("~/Desktop"); }} icon={faDesktop} />
+            <QuickAccessButton name={"Images"} onClick={() => { changeDirectory("~/Pictures"); }} icon={faImage} />
+            <QuickAccessButton name={"Videos"} onClick={() => { changeDirectory("~/Videos"); }} icon={faFileVideo} />
+            <QuickAccessButton name={"Documents"} onClick={() => { changeDirectory("~/Documents"); }} icon={faFileLines} />
+          </div>
+          <DirectoryList
+            directory={currentDirectory}
+            id="main"
+            className={styles.Main}
+            showHidden={showHidden}
+            onOpenFile={(event, file) => {
+              event.preventDefault();
+              if (isSelector)
+                return void onSelectionFinish?.();
+              const options: Record<string, string> = {};
+              if (file.extension === "md" || (file.extension != null && CODE_FORMATS.includes(file.extension)))
+                options.mode = "view";
+              windowsManager?.openFile(file, options);
+            }}
+            onOpenFolder={(event, folder) => {
+              changeDirectory((folder as VirtualFolderLink).linkedPath ?? folder.name);
+            }}
+            onContextMenuFile={onContextMenuFile as unknown as FileEventHandler}
+            onContextMenuFolder={onContextMenuFolder as unknown as FolderEventHandler}
+            allowMultiSelect={selectorMode !== SELECTOR_MODE.SINGLE}
+            onSelectionChange={onSelectionChange}
+          />
+        </div>
+        {!isSelector
+          ? <span className={styles.Footer}>
+            <p className={utilStyles.TextLight}>
+              {itemCount === 1
+                ? itemCount + " item"
+                : itemCount + " items"
+              }
+            </p>
+          </span>
+          : <div className={styles.Footer}>
+            <Footer />
+          </div>
+        }
+      </div>
+    </>
+  );
 }

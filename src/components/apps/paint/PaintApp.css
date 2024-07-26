@@ -1,0 +1,66 @@
+.paint-app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background-color-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.canvas-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    border: 1px solid #000;
+    background-color: #aaaaaa;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--background-color-3);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+}
+
+.controls input[type="color"] {
+    border: none;
+    padding: 0;
+}
+
+.controls input[type="range"] {
+    width: 100px;
+}
+
+.controls button {
+    padding: 5px 10px;
+    border: none;
+    background: var(--background-color-0);
+    color: var(--background-color-);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.controls button:hover {
+    background: color-mix(in srgb, var(--background-color-0) 50%, transparent);
+}

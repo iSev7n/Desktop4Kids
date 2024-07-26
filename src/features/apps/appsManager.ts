@@ -13,6 +13,9 @@ import { IMAGE_FORMATS } from "../../config/apps/mediaViewer.config";
 import { PhotoViewer } from "../../components/apps/file-explorer/photo-viewer/PhotoViewer";
 import { Games } from "../../components/apps/games/Games";
 import { Library } from "../../components/apps/library/Library";
+import PaintAppWrapper from '../../components/apps/paint/PaintAppWrapper';
+import { useVirtualRoot } from "../../hooks/virtual-drive/virtualRootContext";
+import { VirtualFolder } from "../virtual-drive/folder";
 
 // Define the AppCategory type
 type AppCategory = 'Utilities' | 'Games' | 'Apps';
@@ -45,6 +48,11 @@ export class AppsManager {
       size: new Vector2(1000, 800)
     }),
 
+    // Paint App
+    createApp("PaintApp", "paint", PaintAppWrapper, 'Apps', {
+      size: new Vector2(1000, 800)
+    }),
+
     //New Games Appv2
     createApp("Games", "games", Games, 'Games', {
       size: new Vector2(1000, 800)
@@ -59,10 +67,10 @@ export class AppsManager {
       source: "https://desktop4kids.com/EducationCenter/",
       size: new Vector2(1000, 800)
     }),
-    createApp("Paint", "paint", WebView, 'Apps', {
-      source: "https://desktop4kids.com/pixil/",
-      size: new Vector2(1000, 800)
-    }),
+    //createApp("Paint", "paint", WebView, 'Apps', {
+    //  source: "https://desktop4kids.com/pixil/",
+    //  size: new Vector2(1000, 800)
+   // }),
     createApp(APP_NAMES.BROWSER, APPS.BROWSER, Browser, 'Apps', {
       size: new Vector2(1000, 800)
     })
