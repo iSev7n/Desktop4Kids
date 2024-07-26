@@ -2,7 +2,7 @@ import { useState } from "react";
 import { WebView } from "../../_utils/web-view/WebView";
 import { Vector2 } from "../../../../features/math/vector2"; // Adjust this path based on your actual project structure
 import styles from "../Games.module.css"; // Use the Games.module.css for general styling
-import rpgStyles from "./game-category-css/RPGGames.module.css"; // Use a separate CSS module for RPGGames specific styling
+import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css"; // Use a separate CSS module for RPGGames specific styling
 
 const rpgGames = [
   {
@@ -12,9 +12,10 @@ const rpgGames = [
     url: "http://arcade.lostdecadegames.com/onslaught-arena/",
   },
   {
-    name: "Game2",
-    image: "/assets/game-imgs/rpg-game2.png",
-    description: "Description for RPG Game2",
+    name: "Dungeon Warrior",
+    image: "/assets/game-imgs/RPG/game-2-image.png",
+    description: "A First Person Endless Slasher.",
+    url: "https://html-classic.itch.zone/html/3148062/index.html",
   },
   {
     name: "Game3",
@@ -31,9 +32,9 @@ function RPGGames() {
   };
 
   return (
-    <div className={`${styles.GamesContainer} ${rpgStyles.RPGGames}`}>
+    <div className={`${styles.GamesContainer} ${WebViewGamesStyles.RPGGames}`}>
       {webViewUrl ? (
-        <div className={rpgStyles.WebViewContainer}>
+        <div className={WebViewGamesStyles.WebViewContainer}>
           <WebView source={webViewUrl} title="RPG Game" />
         </div>
       ) : (

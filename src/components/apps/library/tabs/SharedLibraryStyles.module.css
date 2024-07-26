@@ -48,3 +48,21 @@
 .BookItem p {
     margin-top: 0.5rem;
 }
+
+.BackButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--background-color-0);
+    border: none;
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 1000;
+  }
+  
+  .BackButton:hover {
+    background-color: var(--background-color-1);
+    transform: scale(1.05);
+  }

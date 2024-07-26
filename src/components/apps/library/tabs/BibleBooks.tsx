@@ -105,10 +105,15 @@ export function BibleBooks() {
     setWebViewUrl(url);
   };
 
+  const goBack = () => {
+    setWebViewUrl(null);
+  };
+
   return (
     <div className={`${sharedStyles.LibraryContainer} ${libraryStyles.WebView}`}>
       {webViewUrl ? (
         <div className={libraryStyles.WebViewContainer}>
+          <button onClick={goBack} className={sharedStyles.BackButton}>Back</button>
           <WebView source={webViewUrl} title="Bible Book" />
         </div>
       ) : (
