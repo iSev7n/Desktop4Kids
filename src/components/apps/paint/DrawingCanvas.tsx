@@ -130,13 +130,18 @@ const DrawingCanvas = forwardRef((props: DrawingCanvasProps, ref) => {
   const saveDrawing = () => {
     const baseCanvas = baseCanvasRef.current;
     if (baseCanvas) {
-      const dataUrl = baseCanvas.toDataURL('image/png');
-      const fileName = prompt("Enter file name to save:", "drawing.png");
-      if (fileName) {
-        onSave(fileName, dataUrl);
-      }
+        const dataUrl = baseCanvas.toDataURL('image/png');
+        let fileName = prompt("Enter file name to save:", "drawing.png");
+
+        if (fileName) {
+            // Ensure the file name ends with .png
+            if (!fileName.toLowerCase().endsWith('.png')) {
+                fileName += '.png';
+            }
+            onSave(fileName, dataUrl);
+        }
     }
-  };
+};
 
   const loadDrawing = async () => {
     const fileName = prompt("Enter file name to load:");
