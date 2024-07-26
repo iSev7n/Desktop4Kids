@@ -1,6 +1,5 @@
 # Desktop4Kids
 
-
 <p align="center">
   <img src="https://desktop4kids.com/img/banner-logo-title.png" alt="Banner" width="700">
 </p>
@@ -25,6 +24,9 @@ Our mission at Desktop4Kids is to foster a safe and stimulating digital landscap
 - **@desktop4kids/video-viewer:** A video viewer app for playing educational videos and safe content.
 - **@desktop4kids/browser:** A browser app that provides a safe internet browsing experience with built-in parental controls.
 - **@desktop4kids/calculator:** A calculator app to help kids with their math homework and learning.
+- **@desktop4kids/game-center:** A Game Center with various game categories including educational, sports, action, and racing games.
+- **@desktop4kids/library-center:** A Virtual Library Center with books that can be read and viewed in a safe environment.
+- **@desktop4kids/paint:** A built-in Paint System that allows you to open photos, draw, and create digital art.
 
 ### Non-standard Applications
 
@@ -60,7 +62,6 @@ This is an npm TypeScript web application. To set up and run the application loc
 
 ![Desktop4Kids Desktop](https://desktop4kids.com/img/desktop4kids-Desktop.png)
 
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
@@ -68,4 +69,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ---
 
 For more information, visit our [website](https://desktop4kids.com).
-

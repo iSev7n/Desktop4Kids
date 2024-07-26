@@ -37,12 +37,6 @@ export class AppsManager {
       size: new Vector2(800, 600)
     }),
 
-    // Games Apps
-    createApp("Wordle", "wordle", WebView, 'Games', {
-      source: "https://prozilla.dev/wordle",
-      size: new Vector2(400, 650)
-    }),
-
     // Library App
     createApp("Library", "library", Library, 'Apps', {
       size: new Vector2(1000, 800)
@@ -53,7 +47,7 @@ export class AppsManager {
       size: new Vector2(1000, 800)
     }),
 
-    //New Games Appv2
+    //Game Center App
     createApp("Games", "games", Games, 'Games', {
       size: new Vector2(1000, 800)
     }),
@@ -67,10 +61,7 @@ export class AppsManager {
       source: "https://desktop4kids.com/EducationCenter/",
       size: new Vector2(1000, 800)
     }),
-    //createApp("Paint", "paint", WebView, 'Apps', {
-    //  source: "https://desktop4kids.com/pixil/",
-    //  size: new Vector2(1000, 800)
-   // }),
+
     createApp(APP_NAMES.BROWSER, APPS.BROWSER, Browser, 'Apps', {
       size: new Vector2(1000, 800)
     })
