@@ -1,9 +1,13 @@
 [← Back](../README.md)
 
-# <img src="../../../../public/assets/apps/icons/media-viewer.svg" width="30" height="30" style="vertical-align: middle; background: none;"/> Media Viewer ("Photos")
+# <img src="../../../../public/assets/apps/icons/media-viewer.svg" width="30" height="30" style="vertical-align: middle; background: none;"/> Media Viewer
 
 An app for viewing media like images and videos.
 
-## Screenshot
+## Screenshot of Media Viewer
 
-![Media Viewer window showing ProzillaOS.png](screenshot.png)
+![Media Viewer Photo window showing Desktop4Kids.png](screenshot.png)
+
+## Screenshot of Video Player 
+
+![Media Viewer Video window showing Desktop4Kids.png](screenshot1.png)

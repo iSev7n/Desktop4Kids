@@ -1,4 +1,5 @@
-<img alt="License" src="https://img.shields.io/github/license/Prozilla/ProzillaOS?style=flat-square&color=ee5253&label=License"> <img alt="Stars" src="https://img.shields.io/github/stars/Prozilla/ProzillaOS?style=flat-square&color=feca57&label=%E2%AD%90">  <img alt="Forks" src="https://img.shields.io/github/forks/Prozilla/ProzillaOS?style=flat-square&color=54a0ff&label=Forks">
+![License: MIT/GPL v3](https://img.shields.io/badge/License-MIT%2FGPL%20v3-blue.svg?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-v1.1.0-green.svg?style=for-the-badge)
 
 # Desktop4Kids
 

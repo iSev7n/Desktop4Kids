@@ -6,4 +6,4 @@ A tool for exploring and managing files and folders with a user interface.
 
 ## Screenshot
 
-![File Explorer window showing Home directory](screenshot.png)
+![File Explorer window showing Desktop directory](screenshot.png)
