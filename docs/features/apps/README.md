@@ -9,6 +9,9 @@ Applications (often shortened to apps) are processes that open a window when ran
 ## Pages
 
 - [<img src="../../../public/assets/apps/icons/terminal.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Commands (terminal)](terminal/README.md)
+- [<img src="../../../public/assets/apps/icons/paint.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Paint (paint)](paint/README.md)
+- [<img src="../../../public/assets/apps/icons/games.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Games (games)](games/README.md)
+- [<img src="../../../public/assets/apps/icons/library.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Library (library)](library/README.md)
 - [<img src="../../../public/assets/apps/icons/file-explorer.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Files (file-explorer)](file-explorer/README.md)
 - [<img src="../../../public/assets/apps/icons/media-viewer.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Photos (media-viewer)](media-viewer/README.md)
 - [<img src="../../../public/assets/apps/icons/text-editor.svg" width=20 height=20 style="vertical-align: text-bottom; background: none;"/> Notes (text-editor)](text-editor/README.md)

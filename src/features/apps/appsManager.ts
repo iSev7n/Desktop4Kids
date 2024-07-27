@@ -118,6 +118,7 @@ export class AppsManager {
  * @param {Partial<App>} [options={}] - Optional settings for the app.
  * @returns {App} - The created app instance.
  */
+
 function createApp(
   name: string,
   id: string,
