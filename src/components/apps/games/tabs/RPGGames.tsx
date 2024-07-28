@@ -18,9 +18,10 @@ const rpgGames = [
     url: "https://html-classic.itch.zone/html/3148062/index.html",
   },
   {
-    name: "Game3",
+    name: "Hero Bounce",
     image: "/assets/game-imgs/rpg-game3.png",
-    description: "Description for RPG Game3",
+    description: "Slash your way through.",
+    url: "https://www.Desktop4kids.com/Games/Hero-Bounce-Web/index.html",
   },
 ];
 
