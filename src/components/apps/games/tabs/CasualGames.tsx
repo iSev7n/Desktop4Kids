@@ -4,9 +4,9 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const casualGames = [
-  { name: "Connect Image", image: "/assets/game-imgs/casual-game1.png", description: "Description for Casual Game1", url: "https://www.Desktop4kids.com/Games/Connect-Image-Web/index.html" },
-  { name: "Find The Difference", image: "/assets/game-imgs/casual-game2.png", description: "Description for Casual Game2", url: "https://www.Desktop4kids.com/Games/Find-Difference-Web/index.html" },
-  { name: "Hungry Froggy", image: "/assets/game-imgs/casual-game3.png", description: "Description for Casual Game3", url: "https://www.Desktop4kids.com/Games/Hungry-Frog-Web/index.html" }
+  { name: "Connect Image", image: "/assets/game-imgs/Casual/casual-game1.png", description: "Description for Casual Game1", url: "https://www.Desktop4kids.com/Games/Connect-Image-Web/index.html" },
+  { name: "Find The Difference", image: "/assets/game-imgs/Casual/casual-game2.png", description: "Description for Casual Game2", url: "https://www.Desktop4kids.com/Games/Find-Difference-Web/index.html" },
+  { name: "Hungry Froggy", image: "/assets/game-imgs/Casual/casual-game3.png", description: "Description for Casual Game3", url: "https://www.Desktop4kids.com/Games/Hungry-Frog-Web/index.html" }
 ];
 
 function CasualGames() {

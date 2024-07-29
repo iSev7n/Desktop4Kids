@@ -4,9 +4,9 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const sandboxGames = [
-  { name: "Sandbox Game1", image: "/assets/game-imgs/sandbox-game1.png", description: "Description for Sandbox Game1", url: "URL_FOR_SANDBOX_GAME1" },
-  { name: "Sandbox Game2", image: "/assets/game-imgs/sandbox-game2.png", description: "Description for Sandbox Game2", url: "URL_FOR_SANDBOX_GAME2" },
-  { name: "Sandbox Game3", image: "/assets/game-imgs/sandbox-game3.png", description: "Description for Sandbox Game3", url: "URL_FOR_SANDBOX_GAME3" }
+  { name: "Space Garden", image: "/assets/game-imgs/Sandbox/sandbox-game1.png", description: "Explore and take over all the planets", url: "https://www.Desktop4kids.com/Games/spacegarden/index.html" },
+  { name: "Sandbox Game2", image: "/assets/game-imgs/Sandbox/sandbox-game2.png", description: "Description for Sandbox Game2", url: "URL_FOR_SANDBOX_GAME2" },
+  { name: "Sandbox Game3", image: "/assets/game-imgs/Sandbox/sandbox-game3.png", description: "Description for Sandbox Game3", url: "URL_FOR_SANDBOX_GAME3" }
 ];
 
 function SandboxGames() {

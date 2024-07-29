@@ -4,7 +4,7 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const racingGames = [
-  { name: "Kart Stroop", image: "/assets/game-imgs/racing-game1.png", description: "Race to the right colors!", url: "https://www.Desktop4kids.com/Games/Kart-Stroop-Web/index.html" }
+  { name: "Kart Stroop", image: "/assets/game-imgs/Racing/racing-game1.png", description: "Race to the right colors!", url: "https://www.Desktop4kids.com/Games/Kart-Stroop-Web/index.html" }
 ];
 
 function RacingGames() {

@@ -4,9 +4,9 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const shooterGames = [
-  { name: "Earth Attack", image: "/assets/game-imgs/shooter-game1.png", description: "Defend Earth!", url: "https://www.Desktop4kids.com/Games/earth_attack/game/index.html" },
-  { name: "Space Shooter", image: "/assets/game-imgs/shooter-game2.png", description: "Shoot Aliens", url: "https://www.Desktop4kids.com/Games/space_shoot/game/index.html" },
-  { name: "Duck Hunt", image: "/assets/game-imgs/shooter-game3.png", description: "Shoot the ducks", url: "https://www.Desktop4kids.com/Games/duck_shoot/game/index.html" }
+  { name: "Earth Attack", image: "/assets/game-imgs/Shooter/shooter-game1.png", description: "Defend Earth!", url: "https://www.Desktop4kids.com/Games/earth_attack/game/index.html" },
+  { name: "Space Shooter", image: "/assets/game-imgs/Shooter/shooter-game2.png", description: "Shoot Aliens", url: "https://www.Desktop4kids.com/Games/space_shoot/game/index.html" },
+  { name: "Duck Hunt", image: "/assets/game-imgs/Shooter/shooter-game3.png", description: "Shoot the ducks", url: "https://www.Desktop4kids.com/Games/duck_shoot/game/index.html" }
 ];
 
 function ShooterGames() {

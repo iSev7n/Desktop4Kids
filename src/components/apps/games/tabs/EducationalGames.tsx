@@ -4,8 +4,8 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const educationalGames = [
-  { name: "Letters Popping", image: "/assets/game-imgs/educational-game1.png", description: "Match the letters", url: "https://www.Desktop4kids.com/Games/Letters-popping-Web/index.html" },
-  { name: "Letters Dash", image: "/assets/game-imgs/educational-game2.png", description: "Match the letters", url: "https://www.Desktop4kids.com/Games/Letters-Dash-Web/index.html" }
+  { name: "Letters Popping", image: "/assets/game-imgs/Education/educational-game1.png", description: "Match the letters", url: "https://www.Desktop4kids.com/Games/Letters-popping-Web/index.html" },
+  { name: "Letters Dash", image: "/assets/game-imgs/Education/educational-game2.png", description: "Match the letters", url: "https://www.Desktop4kids.com/Games/Letters-Dash-Web/index.html" }
 ];
 
 function EducationalGames() {

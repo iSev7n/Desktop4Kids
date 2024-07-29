@@ -4,9 +4,9 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const adventureGames = [
-  { name: "Princess GoldBlade", image: "/assets/game-imgs/adventure-game1.png", description: "Princess GoldBlade and the Dangerous Water!", url: "https://www.Desktop4kids.com/Games/princess_goldblade_and_the_dangerous_waters/game/index.html" },
-  { name: "Snowball World", image: "/assets/game-imgs/adventure-game2.png", description: "Take snowball on an adventure!", url: "https://www.Desktop4kids.com/Games/snowball_world/game/index.html" },
-  { name: "Snowball Christmas World", image: "/assets/game-imgs/adventure-game3.png", description: "Take snowball on a chrsitmas adventure!", url: "https://www.Desktop4kids.com/Games/snowball_christmas_world/game/index.html" }
+  { name: "Princess GoldBlade", image: "/assets/game-imgs/Adventure/adventure-game1.png", description: "Princess GoldBlade and the Dangerous Water!", url: "https://www.Desktop4kids.com/Games/princess_goldblade_and_the_dangerous_waters/game/index.html" },
+  { name: "Snowball World", image: "/assets/game-imgs/Adventure/adventure-game2.png", description: "Take snowball on an adventure!", url: "https://www.Desktop4kids.com/Games/snowball_world/game/index.html" },
+  { name: "Snowball Christmas World", image: "/assets/game-imgs/Adventure/adventure-game3.png", description: "Take snowball on a chrsitmas adventure!", url: "https://www.Desktop4kids.com/Games/snowball_christmas_world/game/index.html" }
 ];
 
 function AdventureGames() {

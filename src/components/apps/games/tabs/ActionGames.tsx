@@ -4,9 +4,10 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const actionGames = [
-  { name: "Battle Battle", image: "/assets/game-imgs/action-game1.png", description: "Description for Action Game1", url: "https://www.Desktop4kids.com/Games/game_battlebattle/game/index.html" },
-  { name: "Indiara & The Skull Gold", image: "/assets/game-imgs/action-game2.png", description: "Description for Action Game2", url: "https://www.Desktop4kids.com/Games/indiara_and_the_skull_gold/game/index.html" },
-  { name: "Ninja Jump Force", image: "/assets/game-imgs/action-game3.png", description: "Description for Action Game3", url: "https://www.Desktop4kids.com/Games/ninja-jump-force/game/index.html" }
+  { name: "Battle Battle", image: "/assets/game-imgs/Action/action-game1.png", description: "Description for Action Game1", url: "https://www.Desktop4kids.com/Games/game_battlebattle/game/index.html" },
+  { name: "Indiara & The Skull Gold", image: "/assets/game-imgs/Action/action-game2.png", description: "Description for Action Game2", url: "https://www.Desktop4kids.com/Games/indiara_and_the_skull_gold/game/index.html" },
+  { name: "Ninja Jump Force", image: "/assets/game-imgs/Action/action-game3.png", description: "Description for Action Game3", url: "https://www.Desktop4kids.com/Games/ninja-jump-force/game/index.html" },
+  { name: "Ninja vs EvilCorp", image: "/assets/game-imgs/Action/action-game4.png", description: "Description for Action Game3", url: "https://www.Desktop4kids.com/Games/ninjavsevilcorp/index.html" },
 ];
 
 function ActionGames() {

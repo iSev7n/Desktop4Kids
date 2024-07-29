@@ -19,9 +19,21 @@ const rpgGames = [
   },
   {
     name: "Hero Bounce",
-    image: "/assets/game-imgs/rpg-game3.png",
+    image: "/assets/game-imgs/RPG/rpg-game3.png",
     description: "Slash your way through.",
     url: "https://www.Desktop4kids.com/Games/Hero-Bounce-Web/index.html",
+  },
+  {
+    name: "Bounce Back",
+    image: "/assets/game-imgs/RPG/rpg-game4.png",
+    description: "Slash your way through.",
+    url: "https://www.Desktop4kids.com/Games/bounceback/index.html",
+  },
+  {
+    name: "Boucne Back in Space",
+    image: "/assets/game-imgs/RPG/rpg-game5.png",
+    description: "Save the princess.",
+    url: "https://www.Desktop4kids.com/Games/bounceback-2/index.html",
   },
 ];
 

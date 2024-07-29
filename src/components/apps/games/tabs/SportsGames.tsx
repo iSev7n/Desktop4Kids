@@ -4,9 +4,9 @@ import styles from "../Games.module.css";
 import WebViewGamesStyles from "./game-category-css/WebViewGames.module.css";
 
 const sportsGames = [
-  { name: "Sports Game1", image: "/assets/game-imgs/sports-game1.png", description: "Description for Sports Game1", url: "URL_FOR_SPORTS_GAME1" },
-  { name: "Sports Game2", image: "/assets/game-imgs/sports-game2.png", description: "Description for Sports Game2", url: "URL_FOR_SPORTS_GAME2" },
-  { name: "Sports Game3", image: "/assets/game-imgs/sports-game3.png", description: "Description for Sports Game3", url: "URL_FOR_SPORTS_GAME3" }
+  { name: "Sports Game1", image: "/assets/game-imgs/Sports/sports-game1.png", description: "Description for Sports Game1", url: "URL_FOR_SPORTS_GAME1" },
+  { name: "Sports Game2", image: "/assets/game-imgs/Sports/sports-game2.png", description: "Description for Sports Game2", url: "URL_FOR_SPORTS_GAME2" },
+  { name: "Sports Game3", image: "/assets/game-imgs/Sports/sports-game3.png", description: "Description for Sports Game3", url: "URL_FOR_SPORTS_GAME3" }
 ];
 
 function SportsGames() {
