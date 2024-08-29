@@ -15,14 +15,18 @@
 }
 
 .Cherry-theme {
-	--background-color-0: var(--red-0);
-	--background-color-1: var(--red-0);
-	--background-color-2: var(--red-1);
-	--background-color-3: var(--red-1);
-	--background-color-4: var(--red-2);
+    --foreground-color-0: #ffffff;
+    --foreground-color-1: #c2c2c2;
+    --foreground-color-2: #c2c2c2;
 
-	--taskbar-color: var(--red-2);
-	--taskbar-menu-color: var(--red-1);
+    --background-color-0: #c20909; /* Darker pastel red */
+    --background-color-1: #df0101;
+    --background-color-2: #8f0505; /* Medium dark red */
+    --background-color-3: #740505; /* Darker red */
+    --background-color-4: #c63c3c; /* Darkest red */
+
+    --taskbar-color: #c20909; /* Taskbar color matches darkest shade */
+    --taskbar-menu-color: #c20909; /* Menu color slightly darker */
 }
 
 .Mango-theme {
@@ -56,28 +60,33 @@
 }
 
 .Grape-theme {
-	--background-color-0: var(--purple-0);
-	--background-color-1: var(--purple-0);
-	--background-color-2: var(--purple-1);
-	--background-color-3: var(--purple-1);
-	--background-color-4: var(--purple-2);
+    --foreground-color-0: #ffffff; /* Darker gray for better contrast */
+    --foreground-color-1: #ffffff;
+    --foreground-color-2: #ffffff;
 
-	--taskbar-color: var(--purple-2);
-	--taskbar-menu-color: var(--purple-1);
+    --background-color-0: #631bc0; /* Light pastel purple */
+    --background-color-1: #a86ef5;
+    --background-color-2: #571da3; /* Slightly darker pastel purple */
+    --background-color-3: #944aee; /* Medium pastel purple */
+    --background-color-4: #a464f3; /* Darker pastel purple */
+
+    --taskbar-color: #a86ef5; /* Taskbar color matches darker shade */
+    --taskbar-menu-color: #b888f4; /* Menu color slightly darker */
 }
 
-.Green-theme {
-    --foreground-color-0: var(--black-3);
-    --foreground-color-1: var(--black-2);
-    --foreground-color-2: var(--black-1);
 
-    --background-color-0: #e0f7e0; /* Light pastel green */
-    --background-color-1: #e0f7e0;
-    --background-color-2: #c2ebc2; /* Slightly darker pastel green */
-    --background-color-3: #c2ebc2;
+.Green-theme {
+    --foreground-color-0: #9cf885;
+    --foreground-color-1: #a3dea3;
+    --foreground-color-2: #a3dea3;
+
+    --background-color-0: #227035; /* Light pastel green */
+    --background-color-1: #043104;
+    --background-color-2: #245730; /* Slightly darker pastel green */
+    --background-color-3: #36a536;
     --background-color-4: #a3dea3; /* Darkest pastel green */
 
-    --taskbar-color: #e0f7e0; /* Taskbar color matches background */
+    --taskbar-color: #7cf37c; /* Taskbar color matches background */
     --taskbar-menu-color: #c2ebc2; /* Menu color slightly darker */
 }
 
@@ -112,16 +121,16 @@
 }
 
 .Pink-theme {
-	--foreground-color-0: var(--black-3);
-    --foreground-color-1: var(--black-2);
-    --foreground-color-2: var(--black-1);
+	--foreground-color-0: #ffffff;
+    --foreground-color-1: #535353;
+    --foreground-color-2: #535353;
 
-    --background-color-0: #f9dddd; /* Light pastel red */
-    --background-color-1: #f9dddd;
-    --background-color-2: #f1bfbf; /* Slightly darker pastel red */
-    --background-color-3: #f1bfbf;
+    --background-color-0: #f3a5c9; /* Light pastel red */
+    --background-color-1: #f096c0;
+    --background-color-2: #ca43a2; /* Slightly darker pastel red */
+    --background-color-3: #f3c1e4;
     --background-color-4: #e99999; /* Darkest pastel red */
 
-    --taskbar-color: #e99999; /* Taskbar color matches darkest shade */
+    --taskbar-color: #ca43a2; /* Taskbar color matches darkest shade */
     --taskbar-menu-color: #f1bfbf; /* Menu color slightly darker */
 }

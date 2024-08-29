@@ -1,101 +1,180 @@
 .Calculator {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	--output-height: 20%;
-	--button-gap: 0.25rem;
-	--history-width: 30%;
-  }
-  
-  .History {
-	width: var(--history-width);
-	padding: 0.5rem;
-	overflow-y: auto;
-	background-color: var(--background-color-1);
-	border-right: 1px solid var(--foreground-color-2);
-	height: calc((100% - var(--output-height)) / 4); /* Set height to half */
-	box-sizing: border-box;
-  }
-  
-  .History h3 {
-	margin: 0 0 0.1rem 0;
-	color: var(--foreground-color-2);
-  }
-  
-  .History ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	height: calc(100% - 1.5rem); /* Adjust height to fit within History */
-	overflow-y: auto;
-  }
-  
-  .History li {
-	margin-bottom: 0.5rem;
-	color: var(--foreground-color-0);
-  }
-  
-  .Output {
-	display: flex;
-	gap: 0.15rem;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-end;
-	height: var(--output-height);
-	padding: 0.5rem;
-	background-color: var(--background-color-2);
-	border-bottom: 2px solid var(--foreground-color-2);
-  }
-  
-  .Calculation,
-  .Preview {
-	margin: 0;
-  }
-  
-  .Calculation {
-	color: var(--foreground-color-2);
-	height: 1.25rem;
-  }
-  
-  .Preview {
-	color: var(--foreground-color-0);
-	font-size: 2.5rem;
-  }
-  
-  .Input {
-	display: flex;
-	gap: var(--button-gap);
-	flex-direction: column;
-	height: calc(100% - var(--output-height) - (calc((100% - var(--output-height)) / 9))); /* Adjust height to fit remaining space */
-	padding: 0.5rem;
-	background-color: var(--background-color-3);
-  }
-  
-  .InputRow {
-	flex: 1;
-	display: flex;
-	gap: var(--button-gap);
-  }
-  
-  .Button {
-	flex: 1;
-	border-radius: var(--border-radius-0);
-	font-size: 1.5rem;
-	background-color: var(--button-color);
-	color: var(--button-text-color);
-  }
-  
-  .InputRow:first-of-type .Button {
-	--button-color: var(--background-color-1);
-	--button-text-color: var(--foreground-color-0);
-  }
-  
-  .InputRow .Button:last-of-type {
-	--button-color: var(--blue-0);
-	--button-text-color: var(--foreground-color-0);
-  }
-  
-  .ButtonLarge {
-	min-width: calc(50% - var(--button-gap) / 2);
-  }
-  
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    --output-height: 20%;
+    --button-gap: 0.5rem;
+    --history-width: 35%; /* Increased width for history */
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--background-color-3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.MainContent {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - var(--history-width) - 1rem); /* Adjusted to add space between history and output */
+    margin-right: 1rem; /* Added space between history and the number display */
+}
+
+.Output {
+    display: flex;
+    gap: 0.25rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    height: var(--output-height);
+    padding: 0.75rem;
+    background-color: var(--background-color-2);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    overflow: hidden; /* Prevents content from overflowing */
+}
+
+.Input {
+    display: flex;
+    gap: var(--button-gap);
+    flex-direction: column;
+    height: calc(100% - var(--output-height));
+    padding: 1rem;
+    background-color: var(--background-color-3);
+    border-radius: 0.5rem;
+}
+
+.InputRow {
+    flex: 1;
+    display: flex;
+    gap: var(--button-gap);
+}
+
+.Button {
+    flex: 1;
+    border-radius: 1rem;
+    font-size: 1.75rem;
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s ease-in-out;
+}
+
+.Button:hover {
+    transform: scale(1.05);
+}
+
+.ButtonLarge {
+    min-width: calc(50% - var(--button-gap) / 2);
+    border-radius: 1rem;
+}
+
+.History {
+    width: var(--history-width);
+    padding: 0 1rem; /* Adjusted padding for history */
+    overflow-y: auto;
+    background-color: transparent; /* Removed background color */
+    border-left: none; /* Removed the border */
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.History h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--foreground-color-2);
+    font-size: 1.25rem;
+    text-align: center;
+    border-bottom: 2px solid var(--foreground-color-2);
+    padding-bottom: 0.5rem;
+}
+
+.History ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: calc(100% - 2rem);
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.History li {
+    margin-bottom: 0.75rem;
+    color: var(--foreground-color-0);
+    font-size: 1rem;
+    padding: 0.5rem;
+    background-color: var(--background-color-2);
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden; /* Prevents overflow */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+    text-overflow: ellipsis; /* Adds ellipsis (...) when the text is too long */
+}
+
+.History li:hover {
+    background-color: var(--background-color-1);
+}
+
+.History li p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--foreground-color-2);
+    overflow: hidden; /* Prevents overflow */
+    white-space: nowrap; /* Prevents text from wrapping */
+    text-overflow: ellipsis; /* Adds ellipsis for overflow */
+}
+
+.History li span {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--foreground-color-0);
+    overflow: hidden; /* Prevents overflow */
+    white-space: nowrap; /* Prevents text from wrapping */
+    text-overflow: ellipsis; /* Adds ellipsis for overflow */
+    max-width: calc(100% - 1rem); /* Ensures it doesn't exceed its container */
+}
+
+.History::-webkit-scrollbar {
+    width: 6px;
+}
+
+.History::-webkit-scrollbar-thumb {
+    background-color: var(--foreground-color-2);
+    border-radius: 3px;
+}
+
+.Calculation,
+.Preview {
+    margin: 0;
+}
+
+.Calculation {
+    color: var(--foreground-color-2);
+    height: 1.5rem;
+    font-weight: bold;
+}
+
+.Preview {
+    color: var(--foreground-color-0);
+    font-size: 2rem; /* Adjusted font size for better fit */
+    font-weight: bold;
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Hides overflow */
+    text-overflow: ellipsis; /* Adds ellipsis (...) when content is too long */
+    max-width: 100%; /* Ensures content stays within the container */
+    word-wrap: break-word; /* Ensures that long words break and fit within the container */
+}
+
+.InputRow:first-of-type .Button {
+    --button-color: var(--background-color-1);
+    --button-text-color: var(--foreground-color-0);
+}
+
+.InputRow .Button:last-of-type {
+    --button-color: var(--blue-0);
+    --button-text-color: var(--foreground-color-0);
+};

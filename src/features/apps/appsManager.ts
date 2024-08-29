@@ -27,7 +27,7 @@ export class AppsManager {
     createApp(APP_NAMES.SETTINGS, APPS.SETTINGS, Settings, 'Utilities'),
     createApp(APP_NAMES.MEDIA_VIEWER, APPS.MEDIA_VIEWER, PhotoViewer, 'Utilities'),
     createApp(APP_NAMES.VIDEO_VIEWER, APPS.VIDEO_VIEWER, MediaViewer, 'Utilities'),
-    createApp(APP_NAMES.CALCULATOR, APPS.CALCULATOR, Calculator, 'Utilities', { size: new Vector2(400, 600) }),
+    createApp(APP_NAMES.CALCULATOR, APPS.CALCULATOR, Calculator, 'Utilities', { size: new Vector2(600, 600) }),
     createApp(APP_NAMES.TEXT_EDITOR, APPS.TEXT_EDITOR, TextEditor, 'Utilities'),
     createApp(APP_NAMES.FILE_EXPLORER, APPS.FILE_EXPLORER, FileExplorer as App["windowContent"], 'Utilities'),
 

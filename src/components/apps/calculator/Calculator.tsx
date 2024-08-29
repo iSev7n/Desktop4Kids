@@ -71,11 +71,11 @@ export function Calculator({ active }: WindowProps) {
         const result = operationsMap[operation!](a, b);
         setInput(result.toString());
 
-        // Update history with a max of 3 entries
+        // Update history with a max of 5 entries
         setHistory((prevHistory) => {
           const newHistory = `${a} ${operation} ${b} = ${result}`;
           const updatedHistory = [newHistory, ...prevHistory];
-          return updatedHistory.slice(0, 5); // Keep only the latest 3 entries
+          return updatedHistory.slice(0, 100);
         });
       }
       setIsIntermediate(intermediate);
@@ -143,6 +143,43 @@ export function Calculator({ active }: WindowProps) {
 
   return (
     <div className={styles.Calculator}>
+      <div className={styles.MainContent}>
+        <div className={styles.Output}>
+          <p className={styles.Calculation}>{calculation}</p>
+          <p className={styles.Preview}>{input ?? firstNumber}</p>
+        </div>
+        <div className={styles.Input}>
+          <div className={styles.InputRow}>
+            <Button className={styles.Button} onClick={reset}>C</Button>
+            <Button className={styles.Button} onClick={() => addInput("-")}>+/-</Button>
+            <Button className={styles.Button} onClick={() => addInput("%")}>%</Button>
+            <Button className={styles.Button} onClick={() => changeOperation("÷")}>÷</Button>
+          </div>
+          <div className={styles.InputRow}>
+            <Button className={styles.Button} onClick={() => addInput("7")}>7</Button>
+            <Button className={styles.Button} onClick={() => addInput("8")}>8</Button>
+            <Button className={styles.Button} onClick={() => addInput("9")}>9</Button>
+            <Button className={styles.Button} onClick={() => changeOperation("×")}>×</Button>
+          </div>
+          <div className={styles.InputRow}>
+            <Button className={styles.Button} onClick={() => addInput("4")}>4</Button>
+            <Button className={styles.Button} onClick={() => addInput("5")}>5</Button>
+            <Button className={styles.Button} onClick={() => addInput("6")}>6</Button>
+            <Button className={styles.Button} onClick={() => changeOperation("-")}>-</Button>
+          </div>
+          <div className={styles.InputRow}>
+            <Button className={styles.Button} onClick={() => addInput("1")}>1</Button>
+            <Button className={styles.Button} onClick={() => addInput("2")}>2</Button>
+            <Button className={styles.Button} onClick={() => addInput("3")}>3</Button>
+            <Button className={styles.Button} onClick={() => changeOperation("+")}>+</Button>
+          </div>
+          <div className={styles.InputRow}>
+            <Button className={`${styles.Button} ${styles.ButtonLarge}`} onClick={() => addInput("0")}>0</Button>
+            <Button className={styles.Button} onClick={() => addInput(".")}>.</Button>
+            <Button className={styles.Button} onClick={calculate}>=</Button>
+          </div>
+        </div>
+      </div>
       <div className={styles.History}>
         <h3>History</h3>
         <ul>
@@ -150,41 +187,6 @@ export function Calculator({ active }: WindowProps) {
             <li key={index}>{entry}</li>
           ))}
         </ul>
-      </div>
-      <div className={styles.Output}>
-        <p className={styles.Calculation}>{calculation}</p>
-        <p className={styles.Preview}>{input ?? firstNumber}</p>
-      </div>
-      <div className={styles.Input}>
-        <div className={styles.InputRow}>
-          <Button className={styles.Button} onClick={reset}>C</Button>
-          <Button className={styles.Button} onClick={() => addInput("-")}>+/-</Button>
-          <Button className={styles.Button} onClick={() => addInput("%")}>%</Button>
-          <Button className={styles.Button} onClick={() => changeOperation("÷")}>÷</Button>
-        </div>
-        <div className={styles.InputRow}>
-          <Button className={styles.Button} onClick={() => addInput("7")}>7</Button>
-          <Button className={styles.Button} onClick={() => addInput("8")}>8</Button>
-          <Button className={styles.Button} onClick={() => addInput("9")}>9</Button>
-          <Button className={styles.Button} onClick={() => changeOperation("×")}>×</Button>
-        </div>
-        <div className={styles.InputRow}>
-          <Button className={styles.Button} onClick={() => addInput("4")}>4</Button>
-          <Button className={styles.Button} onClick={() => addInput("5")}>5</Button>
-          <Button className={styles.Button} onClick={() => addInput("6")}>6</Button>
-          <Button className={styles.Button} onClick={() => changeOperation("-")}>-</Button>
-        </div>
-        <div className={styles.InputRow}>
-          <Button className={styles.Button} onClick={() => addInput("1")}>1</Button>
-          <Button className={styles.Button} onClick={() => addInput("2")}>2</Button>
-          <Button className={styles.Button} onClick={() => addInput("3")}>3</Button>
-          <Button className={styles.Button} onClick={() => changeOperation("+")}>+</Button>
-        </div>
-        <div className={styles.InputRow}>
-          <Button className={`${styles.Button} ${styles.ButtonLarge}`} onClick={() => addInput("0")}>0</Button>
-          <Button className={styles.Button} onClick={() => addInput(".")}>.</Button>
-          <Button className={styles.Button} onClick={calculate}>=</Button>
-        </div>
       </div>
     </div>
   );
